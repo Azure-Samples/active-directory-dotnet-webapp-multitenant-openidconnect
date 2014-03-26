@@ -1,0 +1,893 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.IdentityModel.Protocol.Extensions</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.IdentityModel.Extensions.AudienceValidator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage">
+            <summary>
+            base class for authentication protocol messages.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.#ctor">
+            <summary>
+            Initializes a default instance of the <see cref="T:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.#ctor(System.String)">
+            <summary>
+            Initializes an instance of <see cref="T:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage"/> class with a specific issuerAddress.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.BuildFormPost">
+            <summary>
+            Builds a form post using the current IssuerAddress and the parameters that have been set.
+            </summary>
+            <returns>html with head set to 'Title', body containing a hiden from with action = IssuerAddress.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.BuildRedirectUri">
+            <summary>
+            Builds a Uri and Query string using the current IssuerAddress and the parameters that have been set.
+            </summary>
+            <returns>UrlEncoded string.</returns>
+            <remarks>Each parameter &lt;Key, Value&gt; is first transformed using <see cref="M:System.Web.HttpUtility.UrlEncode(System.String)"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.GetParameter(System.String)">
+            <summary>
+            Returns a parameter.
+            </summary>
+            <param name="parameter">The parameter name.</param>
+            <returns>The value of the parameter or null if the parameter does not exists.</returns>
+            <exception cref="T:System.ArgumentException">parameter is null</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.RemoveParameter(System.String)">
+            <summary>
+            Removes a parameter.
+            </summary>
+            <param name="parameter">The parameter name.</param>
+            <exception cref="T:System.ArgumentNullException">if 'parameter' is null or empty.</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.SetParameter(System.String,System.String)">
+            <summary>
+            Sets a parameter to the Parameters Dictionary.
+            </summary>
+            <param name="parameter">The parameter name.</param>
+            <param name="value">The value to be assigned to parameter.</param>
+            <exception cref="T:System.ArgumentNullException">if 'parameterName' is null or empty.</exception>
+            <remarks>If null is passed as value and a parameter of parametetorName exists, the parameter is removed.</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.SetParameters(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets a collection parameters.
+            </summary>
+            <param name="nameValueCollection"></param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.IssuerAddress">
+            <summary>
+            Gets or sets the issuer address.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The 'value' is null.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.Parameters">
+            <summary>
+            Gets the message parameters as a Dictionary.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.PostTitle">
+            <summary>
+            Gets or sets the title used when constructing the post string.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if the 'value' is null.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.ScriptButtonText">
+            <summary>
+            Gets or sets the script button text used when constructing the post string.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if the 'value' is null.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage.ScriptDisabledText">
+            <summary>
+            Gets or sets the text used when constructing the post string that will be displayed to used if script is disabled.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if the 'value' is null.</exception>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.ErrorMessages">
+            <summary>
+            Error codes and messages
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.IssuerKeyRetriever">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.IssuerValidator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.JsonWebKeysValueNames">
+            <summary>
+            Constant names for Json Web Key Values
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectScopes">
+            <summary>
+            Specific scope values that are interesting to OpenID Connect.  See http://openid.net/specs/openid-connect-messages-1_0.html#scopes
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.ActiveDirectoryOpenIdConnectEndpoints">
+            <summary>
+            Well known endpoints for AzureActiveDirectory
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadataNames">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectParameterNames">
+            <summary>
+            Parameter names for OpenIdConnect.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectResponseTypes">
+            <summary>
+            Response types for OpenIdConnect.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage">
+            <summary>
+            Provides access to common OpenIdConnect request parameters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.#ctor(System.String)">
+            <summary>
+            Initializes an instance of <see cref="T:Microsoft.IdentityModel.Protocols.AuthenticationProtocolMessage"/> class with a specific issuerAddress.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.#ctor(Microsoft.IdentityModel.Protocols.OpenIdConnectMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/> class.
+            </summary>
+            <param name="openIdConnectMessage"> an <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/> to copy.</param>        
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String[]}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> class.
+            </summary>
+            <param name="parameters">Enumeration of key value pairs.</param>        
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.CreateIdTokenQueryString">
+            <summary>
+            Creates an OpenIdConnect message using the current contents of this <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/>.
+            </summary>
+            <returns>The uri to use for a redirect.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.CreateLogoutQueryString">
+            <summary>
+            Creates a query string using the using the current contents of this <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/>.
+            </summary>
+            <returns>The uri to use for a redirect.</returns>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.AuthorizeEndpoint">
+            <summary>
+            Gets or sets the value for the AuthorizeEndpoint
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Access_Token">
+            <summary>
+            Gets or sets 'access_Token'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Acr_Values">
+            <summary>
+            Gets or sets 'acr_values'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Claims_Locales">
+            <summary>
+            Gets or sets 'claims_Locales'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Client_Assertion">
+            <summary>
+            Gets or sets 'client_assertion'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Client_Assertion_Type">
+            <summary>
+            Gets or sets 'client_assertion_type'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Client_Id">
+            <summary>
+            Gets or sets 'client_id'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Client_Secret">
+            <summary>
+            Gets or sets 'client_secret'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Code">
+            <summary>
+            Gets or sets 'code'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Display">
+            <summary>
+            Gets or sets 'display'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Domain_Hint">
+            <summary>
+            Gets or sets 'domain_hint'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Error">
+            <summary>
+            Gets or sets 'error'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Error_Description">
+            <summary>
+            Gets or sets 'error_description'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Error_Uri">
+            <summary>
+            Gets or sets 'error_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Expires_In">
+            <summary>
+            Gets or sets 'expires_in'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Grant_Type">
+            <summary>
+            Gets or sets 'grant_type'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Id_Token">
+            <summary>
+            Gets or sets 'id_token'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Id_Token_Hint">
+            <summary>
+            Gets or sets 'id_token_hint'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Identity_Provider">
+            <summary>
+            Gets or sets 'identity_provider'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Iss">
+            <summary>
+            Gets or sets 'iss'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Login_Hint">
+            <summary>
+            Gets or sets 'login_hint'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Max_Age">
+            <summary>
+            Gets or sets 'max_age'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Nonce">
+            <summary>
+            Gets or sets 'nonce'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Password">
+            <summary>
+            Gets or sets 'password'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Post_Logout_Redirect_Uri">
+            <summary>
+            Gets or sets 'post_logout_redirect_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Prompt">
+            <summary>
+            Gets or sets 'prompt'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Redirect_Uri">
+            <summary>
+            Gets or sets 'redirect_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Request_Uri">
+            <summary>
+            Gets or sets 'request_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Response_Mode">
+            <summary>
+            Gets or sets 'response_mode'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Response_Type">
+            <summary>
+            Gets or sets 'response_type'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Resource">
+            <summary>
+            Gets or sets 'resource'
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Scope">
+            <summary>
+            Gets or sets 'scope'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Session_State">
+            <summary>
+            Gets or sets 'session_state'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.State">
+            <summary>
+            Gets or sets 'state'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Target_Link_Uri">
+            <summary>
+            Gets or sets 'target_link_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Token">
+            <summary>
+            Gets or sets 'token'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.TokenEndpoint">
+            <summary>
+            Gets or sets the value for the token endpoint.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Token_Type">
+            <summary>
+            Gets or sets 'token_type'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Ui_Locales">
+            <summary>
+            Gets or sets 'ui_locales'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.User_Id">
+            <summary>
+            Gets or sets 'user_id'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage.Username">
+            <summary>
+            Gets or sets 'username'.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata">
+            <summary>
+            Contains metadata used in the OpenIdConnect protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.#ctor">
+            <summary>
+            Creates a <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.Authorization_Endpoint">
+            <summary>
+            Gets or sets the authorization endpoint.
+            </summary>       
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.End_Session_Endpoint">
+            <summary>
+            Gets or sets the end session endpoint.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.Issuer">
+            <summary>
+            Gets or sets the token issuer.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.Jwks_Uri">
+            <summary>
+            Gets or sets the token issuer.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.SigningTokens">
+            <summary>
+            Gets the collection of Signing tokens.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata.Token_Endpoint">
+            <summary>
+            Gets or sets the token endpoint.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadataRetriever">
+            <summary>
+            Helper for parsing OpenidConnect metadata.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadataRetriever.GetMetatadata(System.String,System.Net.Http.HttpClient)">
+            <summary>
+            Obtains <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMetadata"/> from an endpoint.
+            </summary>
+            <param name="metadataEndpoint"> the endpoint to query.</param>
+            <param name="httpClient">the <see cref="T:System.Net.Http.HttpClient"/> to use to make the call.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException"/> class.
+            </summary>
+            <param name="message">Addtional information to be included in the exception and displayed to user.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException"/> class.
+            </summary>
+            <param name="message">Addtional information to be included in the exception and displayed to user.</param>
+            <param name="innerException">A <see cref="T:System.Exception"/> that represents the root cause of the exception.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolException"/> class.
+            </summary>
+            <param name="info">the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data.</param>
+            <param name="context">The contextual information about the source or destination.</param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler">
+            <summary>
+            A derived <see cref="T:System.IdentityModel.Tokens.Saml2SecurityTokenHandler"/> that implements ISecurityTokenValidator, 
+            which supports validating tokens passed as strings using <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/>.
+            </summary>
+                
+        </member>
+        <member name="F:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.DefaultClockSkewInSeconds">
+            <summary>
+            Default for the clock skew.
+            </summary>
+            <remarks>300 seconds (5 minutes).</remarks>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.DefaultMaximumTokenSizeInBytes">
+            <summary>
+            Default for the maximm token size.
+            </summary>
+            <remarks>2 MB (mega bytes).</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.CanReadToken(System.String)">
+            <summary>
+            Determines if the string is a well formed Saml2 token (see http://docs.oasis-open.org/security/saml/Post2.0/saml-session-token/v1.0/csd01/saml-session-token-v1.0-csd01.html)
+            </summary>
+            <param name="securityToken">string that should represent a valid Saml2 Token.</param>
+            <returns>
+            <para>'true' if the string starts with an xml element that conforms to the spec above.</para>
+            <para>'false' if token.Length * 2 &gt;  <see cref="P:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.MaximumTokenSizeInBytes"/>.</para>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">'securityToken' is null.</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.CreateClaims(System.IdentityModel.Tokens.Saml2SecurityToken,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Creates claims from a Saml2 token.
+            </summary>
+            <param name="samlToken">The Saml2SecurityToken.</param>
+            <param name="validationParameters"> contains parameters for validating the token.</param>
+            <returns>An IClaimIdentity.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.RetrieveIssuerSigningKeys(System.String,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Produces a <see cref="T:System.Collections.Generic.IEnumerable`1"/> to use when validating the signature of the jwt.
+            </summary>
+            <param name="securityToken">A security token that needs to have its signture validated.</param>
+            <param name="validationParameters">A <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/> instance that has references to multiple <see cref="T:System.IdentityModel.Tokens.SecurityKey"/>.</param>
+            <returns>Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of the keys to use for signature validation.</returns>
+            <exception cref="T:System.ArgumentNullException">'validationParameters' is null.</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.ValidateToken(System.String,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Reads and validates a well fromed Saml2 token.
+            </summary>
+            <param name="securityToken">A Saml2 token.</param>
+            <param name="validationParameters">Contains data and information needed for validation.</param>
+            <exception cref="T:System.ArgumentNullException">'securityToken' is null.</exception>
+            <exception cref="T:System.ArgumentNullException">'validationParameters' is null.</exception>
+            <exception cref="T:System.IdentityModel.Tokens.SecurityTokenException">'securityToken.Length' &gt; <see cref="P:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.MaximumTokenSizeInBytes"/>.</exception>
+            <returns>A <see cref="T:System.Security.Claims.ClaimsPrincipal"/> generated from the claims in the Saml2 token.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.ValidateAudience(System.IdentityModel.Tokens.Saml2Conditions,System.IdentityModel.Tokens.TokenValidationParameters,System.IdentityModel.Tokens.Saml2SecurityToken)">
+            <summary>
+            Determines if the audience of a <see cref="T:System.IdentityModel.Tokens.Saml2SecurityToken"/> is valid.
+            </summary>
+            <param name="conditions">the <see cref="T:System.IdentityModel.Tokens.Saml2Conditions"/> containing the audiences</param>
+            <param name="validationParameters">parameters to define valid.</param>
+            <param name="samlToken">the <see cref="T:System.IdentityModel.Tokens.Saml2SecurityToken"/> that is being validated.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.ValidateIssuer(System.String,System.IdentityModel.Tokens.TokenValidationParameters,System.IdentityModel.Tokens.SecurityToken)">
+            <summary>
+            Determines if an issuer is valid.
+            </summary>
+            <param name="issuer">the issuer to validate</param>
+            <param name="validationParameters">parameters to define valid.</param>
+            <param name="securityToken">the <see cref="T:System.IdentityModel.Tokens.SecurityToken"/> that is being validated.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.AuthenticationType">
+            <summary>
+            Gets or sets the AuthenticationType when creating a <see cref="T:System.Security.Claims.ClaimsIdentity"/> during token validation.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"> if 'value' is null or whitespace.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.ClockSkewInSeconds">
+            <summary>
+            Gets and sets the maximum size in bytes, that a will be processed.
+            </summary>
+            <remarks>This does not set limits when reading tokens using a <see cref="T:System.Xml.XmlReader"/>. Use xml quotas on the <see cref="T:System.Xml.XmlReader"/> for those limits.</remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">'value' less than 1.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.Saml2SecurityTokenHandler.MaximumTokenSizeInBytes">
+            <summary>
+            Gets and sets the maximum size in bytes, that a will be processed.
+            </summary>
+            <remarks>This does not set limits when reading tokens using a <see cref="T:System.Xml.XmlReader"/>. Use xml quotas on the <see cref="T:System.Xml.XmlReader"/> for those limits.</remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">'value' less than 1.</exception>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler">
+            <summary>
+            A derived <see cref="T:System.IdentityModel.Tokens.Saml2SecurityTokenHandler"/> that implements ISecurityTokenValidator, 
+            which supports validating tokens passed as strings using <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/>.
+            </summary>
+                
+        </member>
+        <member name="F:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.DefaultClockSkewInSeconds">
+            <summary>
+            Default for the clock skew.
+            </summary>
+            <remarks>300 seconds (5 minutes).</remarks>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.DefaultMaximumTokenSizeInBytes">
+            <summary>
+            Default for the maximm token size.
+            </summary>
+            <remarks>2 MB (mega bytes).</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.CanReadToken(System.String)">
+            <summary>
+            Determines if the string is a well formed Saml2 token (see http://docs.oasis-open.org/security/saml/Post2.0/saml-session-token/v1.0/csd01/saml-session-token-v1.0-csd01.html)
+            </summary>
+            <param name="securityToken">string that should represent a valid Saml2 Token.</param>
+            <returns>
+            <para>'true' if the string starts with an xml element that conforms to the spec above.</para>
+            <para>'false' if token.Length * 2 &gt;  <see cref="P:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.MaximumTokenSizeInBytes"/>.</para>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">'securityToken' is null.</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.CreateClaims(System.IdentityModel.Tokens.SamlSecurityToken,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Creates claims from a Saml token.
+            </summary>
+            <param name="samlToken">A <see cref="T:System.IdentityModel.Tokens.SamlSecurityToken"/> that will be used to create the claims.</param>
+            <param name="validationParameters"> contains parameters for validating the token.</param>
+            <returns>A <see cref="T:System.Security.Claims.ClaimsIdentity"/> containing the claims from the <see cref="T:System.IdentityModel.Tokens.SamlSecurityToken"/>.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.RetrieveIssuerSigningKeys(System.String,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Produces a <see cref="T:System.Collections.Generic.IEnumerable`1"/> to use when validating the signature of the jwt.
+            </summary>
+            <param name="securityToken">A security token that needs to have its signture validated.</param>
+            <param name="validationParameters">A <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/> instance that has references to multiple <see cref="T:System.IdentityModel.Tokens.SecurityKey"/>.</param>
+            <returns>Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of the keys to use for signature validation.</returns>
+            <exception cref="T:System.ArgumentNullException">'validationParameters' is null.</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.ValidateIssuer(System.String,System.IdentityModel.Tokens.TokenValidationParameters,System.IdentityModel.Tokens.SecurityToken)">
+            <summary>
+            Determines if an issuer is valid.
+            </summary>
+            <param name="issuer">the issuer to validate</param>
+            <param name="validationParameters">parameters to define valid.</param>
+            <param name="securityToken">the <see cref="T:System.IdentityModel.Tokens.SecurityToken"/> that is being validated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.ValidateToken(System.String,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Reads and validates a well formed <see cref="T:System.IdentityModel.Tokens.SamlSecurityToken"/>.
+            </summary>
+            <param name="securityToken">A string containing a well formed token.</param>
+            <param name="validationParameters">Contains data and information needed for validation.</param>
+            <exception cref="T:System.ArgumentNullException">'securityToken' is null.</exception>
+            <exception cref="T:System.ArgumentNullException">'validationParameters' is null.</exception>
+            <exception cref="T:System.IdentityModel.Tokens.SecurityTokenException">'securityToken.Length' &gt; <see cref="P:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.MaximumTokenSizeInBytes"/>.</exception>
+            <returns>A <see cref="T:System.Security.Claims.ClaimsPrincipal"/> generated from the claims in the Saml2 token.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.ValidateAudience(System.IdentityModel.Tokens.SamlConditions,System.IdentityModel.Tokens.TokenValidationParameters,System.IdentityModel.Tokens.SamlSecurityToken)">
+            <summary>
+            Determines if the audience of a <see cref="T:System.IdentityModel.Tokens.SamlSecurityToken"/> is valid.
+            </summary>
+            <param name="conditions">the <see cref="T:System.IdentityModel.Tokens.SamlConditions"/> containing the audiences</param>
+            <param name="validationParameters">parameters to define valid.</param>
+            <param name="samlToken">the <see cref="T:System.IdentityModel.Tokens.SamlSecurityToken"/> that is being validated.</param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.AuthenticationType">
+            <summary>
+            Gets or sets the AuthenticationType when creating a <see cref="T:System.Security.Claims.ClaimsIdentity"/> during token validation.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"> if 'value' is null or whitespace.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.ClockSkewInSeconds">
+            <summary>
+            Gets and sets the maximum size in bytes, that a will be processed.
+            </summary>
+            <remarks>This does not set limits when reading tokens using a <see cref="T:System.Xml.XmlReader"/>. Use xml quotas on the <see cref="T:System.Xml.XmlReader"/> for those limits.</remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">'value' less than 1.</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Extensions.SamlSecurityTokenHandler.MaximumTokenSizeInBytes">
+            <summary>
+            Gets and sets the maximum size in bytes, that a will be processed.
+            </summary>
+            <remarks>This does not set limits when reading tokens using a <see cref="T:System.Xml.XmlReader"/>. Use xml quotas on the <see cref="T:System.Xml.XmlReader"/> for those limits.</remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">'value' less than 1.</exception>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Extensions.SecurityTokenHandlerCollectionExtensions">
+            <summary>
+            Extensions to <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/> that provide support for validating a security token
+            passed as a string and using <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SecurityTokenHandlerCollectionExtensions.ValidateToken(System.IdentityModel.Tokens.SecurityTokenHandlerCollection,System.String,System.IdentityModel.Tokens.TokenValidationParameters)">
+            <summary>
+            Validates a token passed as a string using <see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/>
+            </summary>
+            <param name="tokenHandlers"><see cref="T:System.IdentityModel.Tokens.SecurityTokenHandlerCollection"/> uses extensions for <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/>(s) that can 
+            validate from a string.</param>
+            <param name="securityToken">token to validate.</param>
+            <param name="validationParameters"><see cref="T:System.IdentityModel.Tokens.TokenValidationParameters"/> that contain necessary validation coordinates.</param>
+            <exception cref="T:System.ArgumentNullException">'tokenHandlers' is null.</exception>
+            <exception cref="T:System.ArgumentNullException">'securityToken' is null.</exception>
+            <exception cref="T:System.ArgumentNullException">'validationParameters' is null.</exception>
+            <returns>A <see cref="T:System.Security.Claims.ClaimsPrincipal"/> that represents the identity created when validating the token.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SecurityTokenHandlerCollectionExtensions.GetDefaultHandlers">
+            <summary>
+            Gets the default <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandlerCollection"/> supported by this runtime.
+            </summary>
+            <returns>A collection of <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Extensions.SecurityTokenHandlerCollectionExtensions.GetDefaultHandlers(System.String)">
+            <summary>
+            Gets the default <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandlerCollection"/> supported by this runtime.
+            </summary>
+            <param name="authenticationType"> Each <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/> will create each <see cref="T:System.Security.Claims.ClaimsIdentity"/> with this authenticationType.</param>
+            <returns>A collection of <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Utility.SerializeAsSingleCommaDelimitedString(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Serializes the list of strings into string as follows:
+            'str1','str2','str3' ...
+            </summary>
+            <param name="strings">
+            The strings used to build a comma delimited string.
+            </param>
+            <returns>
+            The single <see cref="T:System.String"/>.
+            </returns>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.WsFederationActions">
+            <summary>
+            Constants for WsFederation actions.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.WsFederationConstants">
+            <summary>
+            Constants defined for WsFederation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.WsFederationFaultCodes">
+            <summary>
+            Constants for WsFederation Fault codes.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.WsFederationParameterNames">
+            <summary>
+            Defines the WsFederation Constants
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Protocols.WsFederationMessage">
+            <summary>
+            Provides access to common WsFederation message parameters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.FromQueryString(System.String)">
+            <summary>
+            Creates a <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> from the contents of a query string.
+            </summary>
+            <param name="queryString"> query string to extract parameters.</param>
+            <returns>An instance of <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/>.</returns>
+            <remarks>If 'queryString' is null or whitespace, a default <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> is returned. Parameters are parsed from <see cref="P:System.Uri.Query"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.FromUri(System.Uri)">
+            <summary>
+            Creates a <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> from the contents of a <see cref="T:System.Uri"/>.
+            </summary>
+            <param name="uri"> uri string to extract parameters.</param>
+            <returns>An instance of <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/>.</returns>
+            <remarks><see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/>.IssuerAddress is NOT set/&gt;. Parameters are parsed from <see cref="P:System.Uri.Query"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> class.
+            </summary>
+            <param name="issuerAddress">The endpoint of the token issuer.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.#ctor(Microsoft.IdentityModel.Protocols.WsFederationMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> class.
+            </summary>
+            <param name="wsFederationMessage"> message to copy.</param>        
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String[]}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> class.
+            </summary>
+            <param name="parameters">Enumeration of key value pairs.</param>        
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.CreateSignInQueryString">
+            <summary>
+            Creates a 'wsignin1.0' message using the current contents of this <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/>.
+            </summary>
+            <returns>The uri to use for a redirect.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.CreateSignOutQueryString">
+            <summary>
+            Creates a 'wsignout1.0' message using the current contents of this <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/>.
+            </summary>
+            <returns>The uri to use for a redirect.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Protocols.WsFederationMessage.GetToken">
+            <summary>
+            Reads the 'wresult' and returns the embeded security token.
+            </summary>
+            <returns>the 'SecurityToken'.</returns>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.IsSignInMessage">
+            <summary>
+            Gets a boolean representating if the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> is a 'sign-in-message'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.IsSignOutMessage">
+            <summary>
+            Gets a boolean representating if the <see cref="T:Microsoft.IdentityModel.Protocols.WsFederationMessage"/> is a 'sign-out-message'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wa">
+            <summary>
+            Gets or sets 'wa'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wattr">
+            <summary>
+            Gets or sets 'wattr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wattrptr">
+            <summary>
+            Gets or sets 'wattrptr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wauth">
+            <summary>
+            Gets or sets 'wauth'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wct">
+            <summary>
+            Gets or sets 'Wct'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wctx">
+            <summary>
+            Gets or sets 'wa'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wencoding">
+            <summary>
+            Gets or sets 'Wencoding'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wfed">
+            <summary>
+            Gets or sets 'wfed'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wfresh">
+            <summary>
+            Gets or sets 'wfresh'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Whr">
+            <summary>
+            Gets or sets 'whr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wp">
+            <summary>
+            Gets or sets 'wp'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wpseudo">
+            <summary>
+            Gets or sets 'wpseudo'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wpseudoptr">
+            <summary>
+            Gets or sets 'wpseudoptr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wreply">
+            <summary>
+            Gets or sets 'wreply'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wreq">
+            <summary>
+            Gets or sets 'wreq'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wreqptr">
+            <summary>
+            Gets or sets 'wreqptr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wres">
+            <summary>
+            Gets or sets 'wres'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wresult">
+            <summary>
+            Gets or sets 'wresult'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wresultptr">
+            <summary>
+            Gets or sets 'wresultptr'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Protocols.WsFederationMessage.Wtrealm">
+            <summary>
+            Gets or sets 'wtrealm'.
+            </summary>
+        </member>
+    </members>
+</doc>

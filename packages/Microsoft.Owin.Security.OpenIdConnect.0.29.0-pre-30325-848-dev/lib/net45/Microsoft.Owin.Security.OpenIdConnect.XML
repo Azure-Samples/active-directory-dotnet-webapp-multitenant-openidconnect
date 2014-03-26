@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Owin.Security.OpenIdConnect</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification">
+            <summary>
+            This Notification can be used to be informed when an 'AccessCode' is received over the OpenIdConnect protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.#ctor(Microsoft.Owin.IOwinContext,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
+            <summary>
+            Creates a <see cref="T:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification"/>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.Code">
+            <summary>
+            Gets or sets the 'code'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ClaimsIdentity">
+            <summary>
+            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ClaimsIdentity"/> that was received in the id_token + code OpenIdConnectRequest.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.JwtSecurityToken">
+            <summary>
+            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.JwtSecurityToken"/> that was received in the id_token + code OpenIdConnectRequest.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ProtocolMessage">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.Redirect_Uri">
+            <summary>
+            Gets or sets the 'redirect_uri'.
+            </summary>
+            <remarks>This is the redirect_uri that was sent in the id_token + code OpenIdConnectRequest.</remarks>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults">
+            <summary>
+            Default values related to OpenIdConnect authentication middleware
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.AuthenticationType">
+            <summary>
+            The default value used for OpenIdConnectAuthenticationOptions.AuthenticationType
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.CookiePrefix">
+            <summary>
+            The prefix used to provide a default OpenIdConnectAuthenticationOptions.CookieName
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.Nonce">
+            <summary>
+            The prefix used to for the a nonce in the cookie the nonce
+            </summary>
+        </member>
+        <member name="T:Owin.OpenIdConnectAuthenticationExtensions">
+            <summary>
+            Extension methods for using <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"/>
+            </summary>
+            
+        </member>
+        <member name="M:Owin.OpenIdConnectAuthenticationExtensions.UseOpenIdConnectAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
+            <summary>
+            Adds the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"/> into the OWIN runtime.
+            </summary>
+            <param name="app">The <see cref="T:Owin.IAppBuilder"/> passed to the configuration method</param>
+            <param name="openIdConnectOptions">A <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/> contains settings for obtaining identities using the OpenIdConnect protocol.</param>
+            <returns>The updated <see cref="T:Owin.IAppBuilder"/></returns>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler">
+            <summary>
+            OWIN handler for OpenIdConnect
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.ApplyResponseGrantAsync">
+            <summary>
+            Handles Signout
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.ApplyResponseChallengeAsync">
+            <summary>
+            Handles SignIn
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.InvokeAsync">
+            <summary>
+            Calls InvokeReplyPathAsync
+            </summary>
+            <returns>True if the request was handled, false if the next middleware should be invoked.</returns>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware">
+            <summary>
+            OWIN middleware for obtaining identities using OpenIdConnect protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware.#ctor(Microsoft.Owin.OwinMiddleware,Owin.IAppBuilder,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
+            <summary>
+            Initializes a <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"/>
+            </summary>
+            <param name="next">The next middleware in the OWIN pipeline to invoke</param>
+            <param name="app">The OWIN application</param>
+            <param name="options">Configuration options for the middleware</param>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware.CreateHandler">
+            <summary>
+            Provides the <see cref="T:Microsoft.Owin.Security.Infrastructure.AuthenticationHandler"/> object for processing authentication-related requests.
+            </summary>
+            <returns>An <see cref="T:Microsoft.Owin.Security.Infrastructure.AuthenticationHandler"/> configured with the <see cref="!:WsFederationAuthenticationOptions"/> supplied to the constructor.</returns>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions">
+            <summary>
+            Configuration options for <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.#ctor">
+            <summary>
+            Initializes a new <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.#ctor(System.String)">
+            <summary>
+            Initializes a new <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/>
+            </summary>
+            <param name="authenticationType"> will be used to when creating the <see cref="!:ClaimsIdentity"/> for the AuthenticationType property.</param>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Authority">
+            <summary>
+            Gets or sets the Authority to use when making OpenIdConnect calls.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.AuthorizeCallback">
+            <summary>
+            An optional constrained path on which to process the authentication callback.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Authorization_Endpoint">
+            <summary>
+            Gets or sets the AuthorizeEndpoint
+            </summary>
+            <remarks>This endpoint is used for obtaining the id_token, code and accesssTokens</remarks>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelCertificateValidator">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.Owin.Security.ICertificateValidator"/> used to validate the certificate protecting the <see cref="!:BackchannelHttpHander"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelHttpHandler">
+            <summary>
+            Gets or sets the <see cref="T:System.Net.Http.HttpMessageHandler"/> to use for making server to server calls.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelTimeout">
+            <summary>
+            Gets or sets the timeout when using the backchannel to make an http call.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.End_Session_Endpoint">
+            <summary>
+            Gets or sets the 'end_session_endpoint'
+            </summary>
+            <remarks>This endpoint is used for ending the session for user.</remarks>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.SecurityTokenHandlers">
+            <summary>
+            Gets or sets the <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandlerCollection"/> of <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/>s used to read and validate <see cref="T:System.IdentityModel.Tokens.SecurityToken"/>s. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Client_Id">
+            <summary>
+            Gets or sets the 'client_id'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Client_Secret">
+            <summary>
+            Gets or sets the 'client_secret'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.MetadataAddress">
+            <summary>
+            Gets or sets the discovery endpoint for obtaining metadata
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Notifications">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications"/> to notify when processing OpenIdConnect messages.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Post_Logout_Redirect_Uri">
+            <summary>
+            Gets or sets the 'post_logout_redirect_uri'
+            </summary>
+            <remarks>This is sent to the OP as the redirect for the user-agent.</remarks>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Redirect_Uri">
+            <summary>
+            Gets or sets the 'redirect_uri'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Resource">
+            <summary>
+            Gets or sets the 'resource'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Response_Mode">
+            <summary>
+            Gets or sets the 'response_mode'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Response_Type">
+            <summary>
+            Gets or sets the 'response_type'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Scope">
+            <summary>
+            Gets or sets the 'scope'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.SignInAsAuthenticationType">
+            <summary>
+            Gets or sets the name of the authentication type that will be assigned to the <see cref="T:System.Security.Claims.ClaimsIdentity"/> representing the signed in user.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.StateDataFormat">
+            <summary>
+            Gets or sets the type used to secure data handled by the middleware.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Token_Endpoint">
+            <summary>
+            Gets or sets the 'token_endpoint'
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.TokenValidationParameters">
+            <summary>
+            Gets or sets the TokenValidationParameters
+            </summary>
+            <remarks>Contains the types and definitions required for validating a token.</remarks>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.Exception_RedirectUri_LogoutQueryString_IsNotWellFormed">
+            <summary>
+              Looks up a localized string similar to OIDC_20001: The query string for Logout is not a well formed URI. The runtime cannot redirect. Redirect uri: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.Exception_ValidatorHandlerMismatch">
+            <summary>
+              Looks up a localized string similar to An ICertificateValidator cannot be specified at the same time as an HttpMessageHandler unless it is a An ICertificateValidator cannot be specified at the same time as an HttpMessageHandler unless it is a WebRequestHandler..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_CHashClaimInJwtPayloadIsNotAString">
+            <summary>
+              Looks up a localized string similar to OICE_20006: The &apos;c_hash&apos; claim was not a JSON string but multivalued, jwt: &apos;{0}&quot;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_CHashClaimInJwtPayloadIsNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to OICE_20007: The &apos;c_hash&apos; claim was null or an empty string, jwt: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_CHashClaimNotFoundInJwt">
+            <summary>
+              Looks up a localized string similar to OICE_20003: A claim of type: &apos;{0}&apos;, representing the c_hash which is required when an &apos;id_token + code&apos; is received was not found in the jwt token: &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_CHashNotValid">
+            <summary>
+              Looks up a localized string similar to OICE_20010: The c_hash: &apos;{0}&apos; did not validate with the code: &apos;{1}&apos;, algorithm: &apos;{2}&apos;, jwt: &apos;{3}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_NonceClaimNotFoundInJwt">
+            <summary>
+              Looks up a localized string similar to OICE_20002: A claim of type: &apos;{0}&apos;, representing the nonce was not found in the jwt token: &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_NonceInJwtDoesNotMatchExpected">
+            <summary>
+              Looks up a localized string similar to OICE_20005: The &apos;nonce&apos; found in the jwt token: &apos;{0}&apos;,  did not match the expected nonce: &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_NonceWasNotFound">
+            <summary>
+              Looks up a localized string similar to OICE_20004: A &apos;nonce&apos; was not found.  The jwt token contained this nonce: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_UnableToCreateHashAlgorithmWhenValidatingCHash">
+            <summary>
+              Looks up a localized string similar to OICE_20008: The algorithm: &apos;{0}&apos; specified in the jwt header was unable to create a hashAlgorithm, jwt: &apos;{1}&apos;. See inner exception for details..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_UnableToCreateNullHashAlgorithmWhenValidatingCHash">
+            <summary>
+              Looks up a localized string similar to OICE_20009: The algorithm: &apos;{0}&apos; specified in the jwt header resulted in a hashAlgorithm that was null,  jwt: &apos;{1}&apos;..
+            </summary>
+        </member>
+    </members>
+</doc>
