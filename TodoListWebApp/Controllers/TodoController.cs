@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace TodoListWebApp.Controllers
 {
+    // claims-aware controller for CRUD operations on the Todo collection
     [Authorize]
     public class TodoController : Controller
     {
@@ -23,7 +24,6 @@ namespace TodoListWebApp.Controllers
             string owner = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var currentUserToDos = db.Todoes.Where(a => a.Owner == owner);
             return View(currentUserToDos.ToList());
-            //return View(db.Todoes.ToList());
         }
 
         // GET: /Todo/Details/5
@@ -49,8 +49,6 @@ namespace TodoListWebApp.Controllers
         }
 
         // POST: /Todo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Description")] Todo todo)
@@ -65,8 +63,6 @@ namespace TodoListWebApp.Controllers
 
             return View(todo);
         }
-
-        // TODO : add claims support
         // GET: /Todo/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -83,10 +79,7 @@ namespace TodoListWebApp.Controllers
             return View(todo);
         }
 
-        // TODO : add claims support
         // POST: /Todo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Description")] Todo todo)
@@ -100,7 +93,6 @@ namespace TodoListWebApp.Controllers
             return View(todo);
         }
 
-        // TODO : add claims support
         // GET: /Todo/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -117,7 +109,6 @@ namespace TodoListWebApp.Controllers
             return View(todo);
         }
 
-        // TODO : add claims support
         // POST: /Todo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

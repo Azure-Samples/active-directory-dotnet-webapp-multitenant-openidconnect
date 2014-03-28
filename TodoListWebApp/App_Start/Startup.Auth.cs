@@ -19,9 +19,9 @@ namespace TodoListWebApp
     {
         private TodoListWebAppContext db = new TodoListWebAppContext();
         public void ConfigureAuth(IAppBuilder app)
-        {
-            //https://manage.windowsazure.com/microsoft.onmicrosoft.com#Workspaces/ActiveDirectoryExtension/Directory/6c3d51dd-f0e5-4959-b4ea-a80c4e36fe5e/RegisteredApp/d71c88d1-f3d3-47e9-8313-06bc9af9a991/registeredAppConfigure
+        {         
             string ClientId = ConfigurationManager.AppSettings["ida:ClientID"];
+            //fixed address for multitenant apps in the public cloud
             string Authority = "https://login.windows.net/common/";
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
@@ -33,26 +33,40 @@ namespace TodoListWebApp
                 {
                     Client_Id = ClientId,
                     Authority = Authority,
-                    Post_Logout_Redirect_Uri = "https://localhost:44302/", // app.Properties["host.Addresses"].ToString(),
                     TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
                     {
+                        // instead of using the default validation (validating against a single issuer value, as we do in line of business apps), 
+                        // we inject our own multitenant validation logic
                         ValidateIssuer = false,
                     },
                     Notifications = new OpenIdConnectAuthenticationNotifications()
                     {
+                        RedirectToIdentityProvider = (context) =>
+                        {
+                            // This ensures that the address used for sign in and sign out is picked up dynamically from the request
+                            // this allows you to deploy your app (to Azure Web Sites, for example)without having to change settings
+                            // Remember that the base URL of the address used here must be provisioned in Azure AD beforehand.
+                            string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;                         
+                            context.ProtocolMessage.Redirect_Uri = appBaseUrl;
+                            context.ProtocolMessage.Post_Logout_Redirect_Uri = appBaseUrl;
+                            return Task.FromResult(0);
+                        },
+                        // we use this notification for injecting our custom logic
                         SecurityTokenValidated = (context) =>
                         {
+                            // retriever caller data from the incoming principal
                             string issuer = context.AuthenticationTicket.Identity.FindFirst("iss").Value;
                             string UPN = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.Name).Value;
+                            string tenantID = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
 
                             if (
-                                //admin consented, recorded issuer
+                                // the caller comes from an admin-consented, recorded issuer
                                 (db.Tenants.FirstOrDefault(a => ((a.IssValue == issuer) && (a.AdminConsented))) == null)
-                                //user consented, recorded user 
-                                && (db.Users.FirstOrDefault(b => (b.UPN == UPN)) == null)
+                                // the caller is recorded in the db of users who went through the individual onboardoing
+                                && (db.Users.FirstOrDefault(b =>((b.UPN == UPN) && (b.TenantID == tenantID))) == null)
                                 )
-                                throw new SecurityTokenValidationException();
-                            //add caller validation logic
+                                // the caller was neither from a trusted issuer or a registered user - throw to block the authentication flow
+                                throw new SecurityTokenValidationException();                            
                             return Task.FromResult(0);
                         },
                         AuthenticationFailed = (context) =>

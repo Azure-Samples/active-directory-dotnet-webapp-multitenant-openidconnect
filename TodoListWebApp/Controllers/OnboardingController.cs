@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace TodoListWebApp.Controllers
 {
+    // controller that handles the onboarding of new tenants and new individual users
+    // operates by starting an OAuth2 request on behalf of the user
+    // during that request, the user is asked whether he/she consent for the app to gain access to the specified directory permissions.    
     public class OnboardingController : Controller
     {
         private TodoListWebAppContext db = new TodoListWebAppContext();
@@ -30,7 +33,8 @@ namespace TodoListWebApp.Controllers
         {
             // generate a random value to identify the request
             string stateMarker = Guid.NewGuid().ToString();
-            //store it in the temporary entry for the tenant
+            // store it in the temporary entry for the tenant, we'll use it later to assess if the request was originated from us
+            // this is necessary if we want to prevent attackers from provisioning themselves to access our app without having gone through our onboarding process (e.g. payments, etc)
             tenant.IssValue = stateMarker;
             tenant.Created = DateTime.Now;
             db.Tenants.Add(tenant);
@@ -55,7 +59,7 @@ namespace TodoListWebApp.Controllers
          // GET: /TOnboarding/ProcessCode
         public ActionResult ProcessCode(string code, string error, string error_description, string resource, string state)
         {
-            // do we like the state?
+            // Is this a response to a request we generated? Let's see if the state is carrying an ID we previously saved
             // ---if we don't, return an error            
             if (db.Tenants.FirstOrDefault(a => a.IssValue == state) == null)
             {
@@ -64,8 +68,8 @@ namespace TodoListWebApp.Controllers
             }
             else
             {
-                // ---if we do
-                // ------get a token for the graph
+                // ---if the response is indeed from a request we generated
+                // ------get a token for the Graph, that will provide us with information abut the caller
                 ClientCredential credential = new ClientCredential(ConfigurationManager.AppSettings["ida:ClientID"],
                                                                    ConfigurationManager.AppSettings["ida:Password"]);
                 AuthenticationContext authContext = new AuthenticationContext("https://login.windows.net/common/");
