@@ -76,7 +76,7 @@ Start the application. Click on Sign Up.
 You will be presented with a form that simulates an onboarding process. Here you can choose if you want to follow the "admin consent" flow (the app gets provisioned for all the users in one organization - requires you to sign up using an administrator) or the "user consent" flow (the app gets provisioned for your user only).
 Click the SignUp button. You'll be transferred to the Azure AD portal. Sign in as the user you want to use for consenting. If the user is from a tenant that is different from the one where the app was developed, you will be presented with a consent page. Click OK. You will be transported back to the app, where your registration will be finalized.
 ####  Sign in
-Once you signed up, you can either click on the Todo tab or the sign in link to gain access to the application. Note that if you are doing this in the same session in whihc you signed up, you will automatically sign in with the same account you used for signing up. If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent). 
+Once you signed up, you can either click on the Todo tab or the sign in link to gain access to the application. Note that if you are doing this in the same session in which you signed up, you will automatically sign in with the same account you used for signing up. If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent). 
 
 ## How To Deploy This Sample to Azure
 
@@ -84,25 +84,50 @@ Coming soon.
 
 ## About The Code
 
-<STILL WORKING ON THIS>
+The application is subdivided in three main functional areas:
 
-This sample shows how to use the OpenID Connect ASP.Net OWIN middleware to sign-in users from a single Azure AD tenant.  The middleware is initialized in the `Startup.Auth.cs` file, by passing it the Client ID of the application and the URL of the Azure AD tenant where the application is registered.  The middleware then takes care of:
-- Downloading the Azure AD metadata, finding the signing keys, and finding the issuer name for the tenant.
-- Processing OpenID Connect sign-in responses by validating the signature and issuer in an incoming JWT, extracting the user's claims, and putting them on ClaimsPrincipal.Current.
-- Integrating with the session cookie ASP.Net OWIN middleware to establish a session for the user. 
+1. Common assets
+2. Sign up
+3. Todo editor
 
-You can trigger the middleware to send an OpenID Connect sign-in request by decorating a class or method with the `[Authorize]` attribute, or by issuing a challenge,
-```C#
-HttpContext.GetOwinContext().Authentication.Challenge(
-	new AuthenticationProperties { RedirectUri = "/" },
-	OpenIdConnectAuthenticationDefaults.AuthenticationType);
-```
-Similarly you can send a signout request,
-```C#
-HttpContext.GetOwinContext().Authentication.SignOut(
-	OpenIdConnectAuthenticationDefaults.AuthenticationType,
-	CookieAuthenticationDefaults.AuthenticationType);
-```
-When a user is signed out, they will be redirected to the `Post_Logout_Redirect_Uri` specified when the OpenID Connect middleware is initialized.
+Let's briefly list the noteworthy elements in each area. For mroe details please refer to the comments in the code.
+
+### Common assets
+
+The application relies on models defined in Models/AppModels.cs, stored via entities as described by the context and initializer classes in the DAL folder.
+The Home controller provides the basis for the main experience, listing all the actions the user can perform and providing conditional UI elements for explicit sign in and sign out (driven by the Account controller).
+
+### Sign Up
+
+The sign up operations are handled by the Onboarding controller.
+The SignUp action and corresponding view simulate a simple onboarding experience, which results in an OAuth2 code grant request that triggers the consent flow.
+The ProcessCode action receives authorization codes from Azure AD and, if they appear valid (see the code comments for details) it creates entries in the application store for the new customer organization/user.
+
+### Todo editor
+
+This is the application proper.
+Its core resource is the Todo controller, a CRUD editor which leverages claims and the entity framework to manage a personalized list of Todo items for the currently signed in user.
+The Todo controller is secured via OpenId Connect, according to the logic in App_Start/Startup.Auth.cs.
+Notable code:
+
+    TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
+    {
+       ValidateIssuer = false,
+    }
+
+That code turns off the default Issuer validation, given that in the multitenant case the list of acceptable issuer values is dynamic and cannot be acquired via metadata (as it is instead the case for the single organization case). 
+
+    RedirectToIdentityProvider = (context) =>
+    {
+       string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
+       context.ProtocolMessage.Redirect_Uri = appBaseUrl;
+       context.ProtocolMessage.Post_Logout_Redirect_Uri = appBaseUrl;
+       return Task.FromResult(0);
+    }
+
+That handler for `RedirectToIdentityProvider` assigns to the `Redirect_Uri` and `Post_Logout_Redirect_Uri` (properties used for sign in and sign out locations) URLs that reflect the current address of the application. This allows you to deploy the app to Azure Web Sites or any other location without having to change hardcoded address settings. Note that you do need to add the intended addresses to the Azure AD entry for your application.
+
+Finally: the implementation of `SecurityTokenValidated` contains the custom caller validation logic, comparing the incoming token with the database of trusted tenants and registered users and interrupting the authentication sequence if a match is not found.
+
 
 All of the OWIN middleware in this project is created as a part of the open source [Katana project](http://katanaproject.codeplex.com).  You can read more about OWIN [here](http://owin.org).
