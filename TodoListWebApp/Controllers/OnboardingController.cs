@@ -87,7 +87,10 @@ namespace TodoListWebApp.Controllers
                 else
                 //otherwise, remove the temporary entry and save just the user
                 {
-                    db.Users.Add(new User { UPN = result.UserInfo.UserId, TenantID = result.TenantId });
+                    if (db.Users.FirstOrDefault(a => (a.UPN == result.UserInfo.UserId) && (a.TenantID == result.TenantId)) == null)
+                    {
+                        db.Users.Add(new User { UPN = result.UserInfo.UserId, TenantID = result.TenantId });
+                    }
                     db.Tenants.Remove(myTenant);
                 }
 

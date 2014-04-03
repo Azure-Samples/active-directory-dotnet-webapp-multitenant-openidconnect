@@ -21,8 +21,6 @@ namespace TodoListWebApp.Models
         public DateTime Created { get; set; }
         [DisplayName("Check this if you are an administrator and you want to enable the app for all your users")]
         public bool AdminConsented { get; set; }
-
-        
     }
 
     // Entity for keeping track of individual users onboarded as customers of the app
