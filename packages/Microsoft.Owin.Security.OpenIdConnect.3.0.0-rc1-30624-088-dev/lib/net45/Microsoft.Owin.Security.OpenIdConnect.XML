@@ -4,37 +4,37 @@
         <name>Microsoft.Owin.Security.OpenIdConnect</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification">
+        <member name="T:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification">
             <summary>
-            This Notification can be used to be informed when an 'AccessCode' is received over the OpenIdConnect protocol.
+            This Notification can be used to be informed when an 'AuthorizationCode' is received over the OpenIdConnect protocol.
             </summary>
         </member>
-        <member name="M:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.#ctor(Microsoft.Owin.IOwinContext,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
+        <member name="M:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.#ctor(Microsoft.Owin.IOwinContext,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
             <summary>
-            Creates a <see cref="T:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification"/>
+            Creates a <see cref="T:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification"/>
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.Code">
+        <member name="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.AuthenticationTicket">
+            <summary>
+            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.AuthenticationTicket"/>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.Code">
             <summary>
             Gets or sets the 'code'.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ClaimsIdentity">
+        <member name="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.JwtSecurityToken">
             <summary>
-            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ClaimsIdentity"/> that was received in the id_token + code OpenIdConnectRequest.
+            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.JwtSecurityToken"/> that was received in the id_token + code OpenIdConnectRequest.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.JwtSecurityToken">
-            <summary>
-            Gets or sets the <see cref="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.JwtSecurityToken"/> that was received in the id_token + code OpenIdConnectRequest.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.ProtocolMessage">
+        <member name="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.ProtocolMessage">
             <summary>
             Gets or sets the <see cref="T:Microsoft.IdentityModel.Protocols.OpenIdConnectMessage"/>.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Notifications.AccessCodeReceivedNotification.Redirect_Uri">
+        <member name="P:Microsoft.Owin.Security.Notifications.AuthorizationCodeReceivedNotification.RedirectUri">
             <summary>
             Gets or sets the 'redirect_uri'.
             </summary>
@@ -55,16 +55,34 @@
             The prefix used to provide a default OpenIdConnectAuthenticationOptions.CookieName
             </summary>
         </member>
+        <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.Caption">
+            <summary>
+            The default value for OpenIdConnectAuthenticationOptions.Caption.
+            </summary>
+        </member>
         <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.Nonce">
             <summary>
-            The prefix used to for the a nonce in the cookie the nonce
+            The prefix used to for the a nonce in the cookie
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationDefaults.RedirectUriUsedForCodeKey">
+            <summary>
+            The property for the RedirectUri that was used when asking for a 'authorizationCode'
             </summary>
         </member>
         <member name="T:Owin.OpenIdConnectAuthenticationExtensions">
             <summary>
             Extension methods for using <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"/>
             </summary>
-            
+        </member>
+        <member name="M:Owin.OpenIdConnectAuthenticationExtensions.UseOpenIdConnectAuthentication(Owin.IAppBuilder,System.String,System.String)">
+            <summary>
+            Adds the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"/> into the OWIN runtime.
+            </summary>
+            <param name="app">The <see cref="T:Owin.IAppBuilder"/> passed to the configuration method</param>
+            <param name="clientId">The application identifier.</param>
+            <param name="metadataAddress">The discovery endpoint for obtaining metadata.</param>
+            <returns>The updated <see cref="T:Owin.IAppBuilder"/></returns>
         </member>
         <member name="M:Owin.OpenIdConnectAuthenticationExtensions.UseOpenIdConnectAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions)">
             <summary>
@@ -76,8 +94,14 @@
         </member>
         <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler">
             <summary>
-            OWIN handler for OpenIdConnect
+            A per-request authentication handler for the OpenIdConnectAuthenticationMiddleware.
             </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.#ctor(Microsoft.Owin.Logging.ILogger)">
+            <summary>
+            Creates a new OpenIdConnectAuthenticationHandler
+            </summary>
+            <param name="logger"></param>
         </member>
         <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.ApplyResponseGrantAsync">
             <summary>
@@ -88,6 +112,12 @@
         <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.ApplyResponseChallengeAsync">
             <summary>
             Handles SignIn
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler.AuthenticateCoreAsync">
+            <summary>
+            Invoked to process incoming authentication messages.
             </summary>
             <returns></returns>
         </member>
@@ -114,7 +144,47 @@
             <summary>
             Provides the <see cref="T:Microsoft.Owin.Security.Infrastructure.AuthenticationHandler"/> object for processing authentication-related requests.
             </summary>
-            <returns>An <see cref="T:Microsoft.Owin.Security.Infrastructure.AuthenticationHandler"/> configured with the <see cref="!:WsFederationAuthenticationOptions"/> supplied to the constructor.</returns>
+            <returns>An <see cref="T:Microsoft.Owin.Security.Infrastructure.AuthenticationHandler"/> configured with the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/> supplied to the constructor.</returns>
+        </member>
+        <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications">
+            <summary>
+            Specifies events which the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationMiddleware"></see> invokes to enable developer control over the authentication process. /&gt;
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.#ctor">
+            <summary>
+            Creates a new set of notifications. Each notification has a default no-op behavior unless otherwise documented.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.AuthenticationFailed">
+            <summary>
+            Invoked if exceptions are thrown during request processing. The exceptions will be re-thrown after this event unless suppressed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.AuthorizationCodeReceived">
+            <summary>
+            Invoked after security token validation if an authorization code is present in the protocol message.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.MessageReceived">
+            <summary>
+            Invoked when a protocol message is first received.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.RedirectToIdentityProvider">
+            <summary>
+            Invoked to manipulate redirects to the identity provider for SignIn, SignOut, or Challenge.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.SecurityTokenReceived">
+            <summary>
+            Invoked with the security token that has been extracted from the protocol message.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications.SecurityTokenValidated">
+            <summary>
+            Invoked after the security token has passed validation and a ClaimsIdentity has been generated.
+            </summary>
         </member>
         <member name="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions">
             <summary>
@@ -130,32 +200,37 @@
             <summary>
             Initializes a new <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions"/>
             </summary>
-            <param name="authenticationType"> will be used to when creating the <see cref="!:ClaimsIdentity"/> for the AuthenticationType property.</param>
+            <param name="authenticationType"> will be used to when creating the <see cref="T:System.Security.Claims.ClaimsIdentity"/> for the AuthenticationType property.</param>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Authority">
             <summary>
             Gets or sets the Authority to use when making OpenIdConnect calls.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.AuthorizeCallback">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.CallbackPath">
             <summary>
             An optional constrained path on which to process the authentication callback.
+            If not provided and RedirectUri is available, this value will be generated from RedirectUri.
             </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Authorization_Endpoint">
-            <summary>
-            Gets or sets the AuthorizeEndpoint
-            </summary>
-            <remarks>This endpoint is used for obtaining the id_token, code and accesssTokens</remarks>
+            <remarks>If you set this value, then the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationHandler"/> will only listen for posts at this address. 
+            If the IdentityProvider does not post to this address, you may end up in a 401 -&gt; IdentityProvider -&gt; Client -&gt; 401 -&gt; ...</remarks>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelCertificateValidator">
             <summary>
-            Gets or sets the <see cref="T:Microsoft.Owin.Security.ICertificateValidator"/> used to validate the certificate protecting the <see cref="!:BackchannelHttpHander"/>.
+            Gets or sets the a pinned certificate validator to use to validate the endpoints used
+            when retrieving metadata.
             </summary>
+            <value>
+            The pinned certificate validator.
+            </value>
+            <remarks>If this property is null then the default certificate checks are performed,
+            validating the subject name and if the signing chain is a trusted party.</remarks>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelHttpHandler">
             <summary>
-            Gets or sets the <see cref="T:System.Net.Http.HttpMessageHandler"/> to use for making server to server calls.
+            The HttpMessageHandler used to retrieve metadata.
+            This cannot be set at the same time as BackchannelCertificateValidator unless the value
+            is a WebRequestHandler.
             </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.BackchannelTimeout">
@@ -163,25 +238,31 @@
             Gets or sets the timeout when using the backchannel to make an http call.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.End_Session_Endpoint">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Caption">
             <summary>
-            Gets or sets the 'end_session_endpoint'
+            Get or sets the text that the user can display on a sign in user interface.
             </summary>
-            <remarks>This endpoint is used for ending the session for user.</remarks>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.SecurityTokenHandlers">
             <summary>
             Gets or sets the <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandlerCollection"/> of <see cref="T:System.IdentityModel.Tokens.SecurityTokenHandler"/>s used to read and validate <see cref="T:System.IdentityModel.Tokens.SecurityToken"/>s. 
             </summary>
+            <exception cref="T:System.ArgumentNullException">if 'value' is null.</exception>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Client_Id">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.ClientId">
             <summary>
             Gets or sets the 'client_id'.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Client_Secret">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.ClientSecret">
             <summary>
             Gets or sets the 'client_secret'.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Configuration">
+            <summary>
+            Configuration provided directly by the developer. If provided, then MetadataAddress and the Backchannel properties
+            will not be used. This information should not be updated during request processing.
             </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.MetadataAddress">
@@ -189,18 +270,31 @@
             Gets or sets the discovery endpoint for obtaining metadata
             </summary>
         </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.ConfigurationManager">
+            <summary>
+            Responsible for retrieving, caching, and refreshing the configuration from metadata.
+            If not provided, then one will be created using the MetadataAddress and Backchannel properties.
+            </summary>
+        </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Notifications">
             <summary>
             Gets or sets the <see cref="T:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationNotifications"/> to notify when processing OpenIdConnect messages.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Post_Logout_Redirect_Uri">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.OpenIdConnectProtocolValidationParameters">
+            <summary>
+            Gets or sets the <see cref="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.OpenIdConnectProtocolValidationParameters"/> that are used ensure the 'id_token' received 
+            is valid per: http://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation 
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if 'value' is null.</exception>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.PostLogoutRedirectUri">
             <summary>
             Gets or sets the 'post_logout_redirect_uri'
             </summary>
             <remarks>This is sent to the OP as the redirect for the user-agent.</remarks>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Redirect_Uri">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.RedirectUri">
             <summary>
             Gets or sets the 'redirect_uri'.
             </summary>
@@ -210,12 +304,12 @@
             Gets or sets the 'resource'.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Response_Mode">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.ResponseMode">
             <summary>
             Gets or sets the 'response_mode'.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Response_Type">
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.ResponseType">
             <summary>
             Gets or sets the 'response_type'.
             </summary>
@@ -227,7 +321,7 @@
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.SignInAsAuthenticationType">
             <summary>
-            Gets or sets the name of the authentication type that will be assigned to the <see cref="T:System.Security.Claims.ClaimsIdentity"/> representing the signed in user.
+            Gets or sets the AuthenticationType used when creating the <see cref="T:System.Security.Claims.ClaimsIdentity"/>.
             </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.StateDataFormat">
@@ -235,16 +329,18 @@
             Gets or sets the type used to secure data handled by the middleware.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.Token_Endpoint">
-            <summary>
-            Gets or sets the 'token_endpoint'
-            </summary>
-        </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.TokenValidationParameters">
             <summary>
             Gets or sets the TokenValidationParameters
             </summary>
             <remarks>Contains the types and definitions required for validating a token.</remarks>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.OpenIdConnectAuthenticationOptions.UseTokenLifetime">
+            <summary>
+            Indicates that the authentication session lifetime (e.g. cookies) should match that of the authentication token.
+            If the token does not provide lifetime information then normal session lifetimes will be used.
+            This is enabled by default.
+            </summary>
         </member>
         <member name="T:Microsoft.Owin.Security.OpenIdConnect.Resources">
             <summary>
@@ -260,6 +356,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ArgsException_BackchallelLessThanZero">
+            <summary>
+              Looks up a localized string similar to BackchannelTimeout cannot be less or equal to TimeSpan.Zero..
             </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.Exception_RedirectUri_LogoutQueryString_IsNotWellFormed">
@@ -304,7 +405,7 @@
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_NonceWasNotFound">
             <summary>
-              Looks up a localized string similar to OICE_20004: A &apos;nonce&apos; was not found.  The jwt token contained this nonce: &apos;{0}&apos;..
+              Looks up a localized string similar to OICE_20004: The &apos;nonce&apos; was not found..
             </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.OpenIdConnect.Resources.ProtocolException_UnableToCreateHashAlgorithmWhenValidatingCHash">
