@@ -18,7 +18,7 @@ Every Azure subscription has an associated Azure Active Directory tenant. You ca
 
 From your shell or command line:
 
-`git clone git@github.com:AzureADSamples/WebApp-MultiTenant-OpenIdConnect-DotNet.git`
+`git clone https://github.com/AzureADSamples/WebApp-MultiTenant-OpenIdConnect-DotNet.git`
 
 ### Step 2:  Create a user account in your Azure Active Directory tenant
 
