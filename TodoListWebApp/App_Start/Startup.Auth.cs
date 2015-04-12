@@ -22,7 +22,7 @@ namespace TodoListWebApp
         {         
             string ClientId = ConfigurationManager.AppSettings["ida:ClientID"];
             //fixed address for multitenant apps in the public cloud
-            string Authority = "https://login.windows.net/common/";
+            string Authority = "https://login.microsoftonline.com/common/";
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
