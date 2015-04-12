@@ -13,11 +13,10 @@ namespace TodoListWebApp.Controllers
             return View();
         }
 
-        public ActionResult Error()
+        public ActionResult Error(string message)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            ViewBag.Message = message;
+            return View("Error");
         }       
     }
 }

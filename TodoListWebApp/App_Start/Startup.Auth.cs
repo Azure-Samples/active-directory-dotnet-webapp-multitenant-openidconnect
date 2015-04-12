@@ -71,7 +71,7 @@ namespace TodoListWebApp
                         },
                         AuthenticationFailed = (context) =>
                         {
-                            context.OwinContext.Response.Redirect("/Home/Error");
+                            context.OwinContext.Response.Redirect("/Home/Error?message=" + context.Exception.Message);
                             context.HandleResponse(); // Suppress the exception
                             return Task.FromResult(0);
                         }
