@@ -1,5 +1,10 @@
-Build a multi-tenant SaaS web application using Azure AD & OpenID Connect
-===========================
+---
+services: active-directory
+platforms: dotnet
+author: dstrockis
+---
+
+# Build a multi-tenant SaaS web application using Azure AD & OpenID Connect
 
 This sample shows how to build a multi-tenant .Net MVC web application that uses OpenID Connect to sign up and sign in users from any Azure Active Directory tenant, using the ASP.Net OpenID Connect OWIN middleware and the Active Directory Authentication Library (ADAL) for .NET.
 
@@ -12,13 +17,13 @@ Getting started is simple!  To run this sample you will need:
 - An Internet connection
 - An Azure subscription (a free trial is sufficient)
 
-Every Azure subscription has an associated Azure Active Directory tenant. You can easily create new tenants within your subscription for testing purposes   If you don't already have an Azure subscription, you can get a free subscription by signing up at [http://wwww.windowsazure.com](http://www.windowsazure.com).  All of the Azure AD features used by this sample are available free of charge.
+Every Azure subscription has an associated Azure Active Directory tenant. You can easily create new tenants within your subscription for testing purposes   If you don't already have an Azure subscription, you can get a free subscription by signing up at [https://azure.microsoft.com](https://azure.microsoft.com).  All of the Azure AD features used by this sample are available free of charge.
 
 ### Step 1:  Clone or download this repository
 
 From your shell or command line:
 
-`git clone https://github.com/AzureADSamples/WebApp-MultiTenant-OpenIdConnect-DotNet.git`
+`git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git`
 
 ### Step 2:  Create a user account in your Azure Active Directory tenant
 
