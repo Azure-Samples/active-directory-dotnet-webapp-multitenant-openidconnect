@@ -43,7 +43,7 @@ If you already have a user account in your Azure Active Directory tenant, you ca
 10. Click the Finish button on the lower right corner. Your application is now provisioned.
 11. Click on the Configure tab of your application
 12. Find "the application is multi-tenant" switch and flip it to yes. Hit the Save button from the command bar.
-12. Scroll down to the bottom of the page, to the section Permissions to other applications". On the Windows Azure Active Directory row, open the Delegated Permissions combo box and select "Enable sign-on and read users' profiles". Hit Save again.
+12. Scroll down to the bottom of the page, to the section Permissions to other applications". On the Azure Active Directory row, open the Delegated Permissions combo box and select "Enable sign-on and read users' profiles". Hit Save again.
 
 Don't close the browser yet, as we will still need to work with the portal for few more steps. 
 
