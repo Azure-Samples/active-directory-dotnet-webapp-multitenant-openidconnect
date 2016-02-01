@@ -43,11 +43,13 @@ namespace TodoListWebApp.Controllers
             //create an OAuth2 request, using the web app as the client.
             //this will trigger a consent flow that will provision the app in the target tenant
             string authorizationRequest = String.Format(
-                "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}&state={3}",
+                "{4}/{5}/oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}&state={3}",
                  Uri.EscapeDataString(ConfigurationManager.AppSettings["ida:ClientID"]),
-                 Uri.EscapeDataString("https://graph.windows.net"),
+                 Uri.EscapeDataString(ConfigurationManager.AppSettings["GraphAPIEndpoint"]),
                  Uri.EscapeDataString(this.Request.Url.GetLeftPart(UriPartial.Authority).ToString() + "/Onboarding/ProcessCode"),
-                 Uri.EscapeDataString(stateMarker)
+                 Uri.EscapeDataString(stateMarker),
+                 ConfigurationManager.AppSettings["SignOnEndpoint"],
+                 ConfigurationManager.AppSettings["ida:TenantId"]
                  );
             //if the prospect customer wants to provision the app for all users in his/her tenant, the request must be modified accordingly
             if (tenant.AdminConsented)
@@ -72,7 +74,10 @@ namespace TodoListWebApp.Controllers
                 // ------get a token for the Graph, that will provide us with information abut the caller
                 ClientCredential credential = new ClientCredential(ConfigurationManager.AppSettings["ida:ClientID"],
                                                                    ConfigurationManager.AppSettings["ida:Password"]);
-                AuthenticationContext authContext = new AuthenticationContext("https://login.windows.net/common/");
+                string Authority = string.Format("{0}/{1}",
+                    ConfigurationManager.AppSettings["SignOnEndpoint"],
+                    ConfigurationManager.AppSettings["ida:TenantId"]);
+                AuthenticationContext authContext = new AuthenticationContext(Authority);
                 AuthenticationResult result = authContext.AcquireTokenByAuthorizationCode(
                     code, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), credential);
 
@@ -81,7 +86,7 @@ namespace TodoListWebApp.Controllers
                 if (myTenant.AdminConsented)
                 {
                     // ------read the tenantID out of the Graph token and use it to create the issuer string
-                    string issuer = String.Format("https://sts.windows.net/{0}/", result.TenantId);
+                    string issuer = String.Format("{0}/{1}/", ConfigurationManager.AppSettings["SecurityTokenServiceEndpoint"], result.TenantId);
                     myTenant.IssValue = issuer;
                 }
                 else
