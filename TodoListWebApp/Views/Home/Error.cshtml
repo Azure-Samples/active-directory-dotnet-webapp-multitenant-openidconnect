@@ -1,7 +1,13 @@
 ﻿
 @{
     ViewBag.Title = "Error";
+    var connStringSet = System.Configuration.ConfigurationManager.ConnectionStrings["TodoListWebAppContext"] != null;
 }
 
 <h2>Did you break the app again?!</h2>
+Please confirm the following:
+<ul>
+    <li>Connection String ("TodoListWebAppContext") is set. (@(connStringSet))</li>
+    <li>A tenant has been added to the tenant db (@( connStringSet ? new TodoListWebApp.DAL.TodoListWebAppContext().Tenants.Count(): 0) tenants)</li>
+</ul>
 
