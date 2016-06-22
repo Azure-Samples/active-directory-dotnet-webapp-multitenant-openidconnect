@@ -8,6 +8,8 @@ author: dstrockis
 
 This sample shows how to build a multi-tenant .Net MVC web application that uses OpenID Connect to sign up and sign in users from any Azure Active Directory tenant, using the ASP.Net OpenID Connect OWIN middleware and the Active Directory Authentication Library (ADAL) for .NET.
 
+> Looking for previous versions of this code sample? Check out the tags on the [releases](../../releases) GitHub page.
+
 For more information about how the protocols work in this scenario and other scenarios, see the [Authentication Scenarios for Azure AD](https://azure.microsoft.com/documentation/articles/active-directory-authentication-scenarios/) document.
 
 ## How To Run This Sample
@@ -41,7 +43,10 @@ If you already have a user account in your Azure Active Directory tenant, you ca
 8. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`.
 9. For the App ID URI, enter `https://<your_tenant_domain>/TodoListWebApp_MT`, replacing `<your_tenant_domain>` with the domain of your Azure AD tenant (either in the form `<tenant_name>.onmicrosoft.com` or your own custom domain if you registered it in Azure Active Directory).
 10. Click the Finish button on the lower right corner. Your application is now provisioned.
-11. Click on the Configure tab of your application
+1. While still in the Azure portal, click the **Configure** tab of your application.
+2. Locate the **Manage Manifest** button in the bottom drawer.  Click it and download your application's manifest as a `.json` file.
+3. Open the `.json` file in a text editor and change the `logoutUrl` property to `https://localhost:44302/Account/EndSession`.  This is the default single sign out URL for this sample.
+4. Back in the Azure portal, click **Manage Manifest** then **Upload Manifest**, and upload your updated `.json` file.
 12. Find "the application is multi-tenant" switch and flip it to yes. Hit the Save button from the command bar.
 12. Scroll down to the bottom of the page, to the section Permissions to other applications". On the Azure Active Directory row, open the Delegated Permissions combo box and select "Enable sign-on and read users' profiles". Hit Save again.
 
