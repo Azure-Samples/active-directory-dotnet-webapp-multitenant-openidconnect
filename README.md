@@ -33,33 +33,24 @@ If you already have a user account in your Azure Active Directory tenant, you ca
 
 ### Step 3:  Register the sample with your Azure Active Directory tenant
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "TodoListWebApp_MT", select "Web Application and/or Web API", and click next.
-8. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`.
-9. For the App ID URI, enter `https://<your_tenant_domain>/TodoListWebApp_MT`, replacing `<your_tenant_domain>` with the domain of your Azure AD tenant (either in the form `<tenant_name>.onmicrosoft.com` or your own custom domain if you registered it in Azure Active Directory).
-10. Click the Finish button on the lower right corner. Your application is now provisioned.
-1. While still in the Azure portal, click the **Configure** tab of your application.
-2. Locate the **Manage Manifest** button in the bottom drawer.  Click it and download your application's manifest as a `.json` file.
-3. Open the `.json` file in a text editor and change the `logoutUrl` property to `https://localhost:44302/Account/EndSession`.  This is the default single sign out URL for this sample.
-4. Back in the Azure portal, click **Manage Manifest** then **Upload Manifest**, and upload your updated `.json` file.
-12. Find "the application is multi-tenant" switch and flip it to yes. Hit the Save button from the command bar.
-12. Scroll down to the bottom of the page, to the section Permissions to other applications". On the Azure Active Directory row, open the Delegated Permissions combo box and select "Enable sign-on and read users' profiles". Hit Save again.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3. Click on **Registered Applications** and choose **Add**.
+4. Enter a friendly name for the application, for example 'TodoListWebApp_MT' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`. Click on **Create** to create the application.
+5. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+6. Find the Application ID value and copy it to the clipboard.
+7. In the same page, change the "Logout Url" to `https://localhost:44302/Account/EndSession`.  This is the default single sign out URL for this sample.
+8. Find "multi-tenanted" switch and flip it to yes. 
+9. Configure Permissions for your application - in the Settings menu, choose the 'Required permissions' section, click on **Add**, then **Select an API**, and select 'Microsoft Graph' (this is the Graph API). Then, click on  **Select Permissions** and select 'Sign in and read user profile'.
 
 Don't close the browser yet, as we will still need to work with the portal for few more steps. 
 
 ### Step 4:  Provision a key for your app in your Azure Active Directory tenant
 
 The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant.
- 
-1. Click the Configure tab of your application.
-2. Find the Keys section. In the Select Duration dropdown, pick a value.
-3. Hit the Save button on the bottom command bar.
-4. Once the save operation terminates, the value of the key appears. Copy the key to the clipboard. **Important: this is the only opportunity you have to access the value of the key, if you don't use it now you'll have to create a new one.**
+
+From the Settings menu, choose **Keys** and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Portal.
 
 Leave the browser open to this page. 
 
@@ -70,8 +61,8 @@ At this point we are ready to paste into the VS project the settings that will t
 1. Open the solution in Visual Studio 2013.
 2. Open the `web.config` file.
 3. Find the app key `ida:Password` and replace the value you copied in step 4.
-4. Go back to the portal, find the CLIENT ID field and copy its content to the clipboard
-5. Find the app key `ida:ClientId` and replace the value with the CLIENT ID from the Azure portal.
+4. Go back to the portal, find the APPLICATION ID field and copy its content to the clipboard
+5. Find the app key `ida:ClientId` and replace the value with the APPLICATION ID from the Azure portal.
 
 ### Step 6:  [optional] Create an Azure Active Directory test tenant 
 
