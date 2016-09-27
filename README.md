@@ -17,9 +17,8 @@ For more information about how the protocols work in this scenario and other sce
 Getting started is simple!  To run this sample you will need:
 - Visual Studio 2013
 - An Internet connection
-- An Azure subscription (a free trial is sufficient)
-
-Every Azure subscription has an associated Azure Active Directory tenant. You can easily create new tenants within your subscription for testing purposes   If you don't already have an Azure subscription, you can get a free subscription by signing up at [https://azure.microsoft.com](https://azure.microsoft.com).  All of the Azure AD features used by this sample are available free of charge.
+- An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/) 
+- A user account in your Azure AD tenant. This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
 ### Step 1:  Clone or download this repository
 
@@ -27,11 +26,7 @@ From your shell or command line:
 
 `git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git`
 
-### Step 2:  Create a user account in your Azure Active Directory tenant
-
-If you already have a user account in your Azure Active Directory tenant, you can skip to the next step.  This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now. You can find instructions to do that [here](http://www.cloudidentity.com/blog/2013/12/11/setting-up-an-asp-net-project-with-organizational-authentication-requires-an-organizational-account/).  If you create an account and want to use it to sign-in to the Azure portal, don't forget to add the user account as a co-administrator of your Azure subscription.
-
-### Step 3:  Register the sample with your Azure Active Directory tenant
+### Step 2:  Register the sample with your Azure Active Directory tenant
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
 2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
@@ -46,7 +41,7 @@ If you already have a user account in your Azure Active Directory tenant, you ca
 
 Don't close the browser yet, as we will still need to work with the portal for few more steps. 
 
-### Step 4:  Provision a key for your app in your Azure Active Directory tenant
+### Step 3:  Provision a key for your app in your Azure Active Directory tenant
 
 The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant.
 
@@ -54,7 +49,7 @@ From the Settings menu, choose **Keys** and add a key - select a key duration of
 
 Leave the browser open to this page. 
 
-### Step 5:  Configure the sample to use your Azure Active Directory tenant
+### Step 4:  Configure the sample to use your Azure Active Directory tenant
 
 At this point we are ready to paste into the VS project the settings that will tie it to its entry in your Azure AD tenant. 
 
@@ -64,14 +59,15 @@ At this point we are ready to paste into the VS project the settings that will t
 4. Go back to the portal, find the APPLICATION ID field and copy its content to the clipboard
 5. Find the app key `ida:ClientId` and replace the value with the APPLICATION ID from the Azure portal.
 
-### Step 6:  [optional] Create an Azure Active Directory test tenant 
+### Step 5:  [optional] Create an Azure Active Directory test tenant 
 
 This sample shows how to take advantage of the consent model in Azure AD to make an application available to any user from any organization with a tenant in Azure AD. To see that part of the sample in action, you need to have access to user accounts from a tenant that is different from the one you used for developing the application. The simplest way of doing that is to create a new directory tenant in your Azure subscription (just navigate to the main Active Directory page in the portal and click Add) and add test users.
 This step is optional as you can also use accounts from the same directory, but if you do you will not see the consent prompts as the app is already approved. 
 
-### Step 5:  Run the sample
+### Step 6:  Run the sample
 
 The sample implements two distinct tasks: the onboarding of a new customer and regular sign in & use of the application.
+
 ####  Sign up
 Start the application. Click on Sign Up.
 You will be presented with a form that simulates an onboarding process. Here you can choose if you want to follow the "admin consent" flow (the app gets provisioned for all the users in one organization - requires you to sign up using an administrator) or the "user consent" flow (the app gets provisioned for your user only).
