@@ -14,6 +14,11 @@ For more information about how the protocols work in this scenario and other sce
 
 ## How To Run This Sample
 
+>[!Note] If you want to run this sample on **Azure Government**, navigate to the "Azure Government Deviations" section at the bottom of this page.
+>
+>
+>
+
 Getting started is simple!  To run this sample you will need:
 - Visual Studio 2013
 - An Internet connection
@@ -48,17 +53,23 @@ The new customer onboarding process implemented by the sample requires the appli
 
 From the Settings menu, choose **Keys** and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Portal.
 
+After provisioning the key, navigate to the "Reply URLs" section and add these two reply URLs:
+
+    -"https://localhost:44302/"
+    -"https://localhost:44302/Onboarding/ProcessCode" 
+    
 Leave the browser open to this page. 
 
 ### Step 4:  Configure the sample to use your Azure Active Directory tenant
 
 At this point we are ready to paste into the VS project the settings that will tie it to its entry in your Azure AD tenant. 
 
-1. Open the solution in Visual Studio 2013.
+1. Open the solution in Visual Studio 2017.
 2. Open the `web.config` file.
 3. Find the app key `ida:Password` and replace the value you copied in step 4.
 4. Go back to the portal, find the APPLICATION ID field and copy its content to the clipboard
 5. Find the app key `ida:ClientId` and replace the value with the APPLICATION ID from the Azure portal.
+6. Navigate to the `Dal` folder and open the `ToDoListWebAppContext` file. In the `TodoListWebAppContext()` definition set the base to the connection string for the SQL database that you want to use. If you want to use your local SQL database, your base definition should look like this: `base("Server = (localdb)\\mssqllocaldb; Database=Inventory;Trusted_Connection=True;MultipleActiveResultSets=true")`. 
 
 ### Step 5:  [optional] Create an Azure Active Directory test tenant 
 
@@ -80,6 +91,18 @@ Once you signed up, you can either click on the Todo tab or the sign in link to 
 
 Coming soon.
 
+## Azure Government Deviations
+
+In order to run this sample on Azure Government you can follow through the steps above with a few variations:
+
+- Step 2: 
+   - You must register this sample for your AAD Tenant in Azure Government by following Step 2 above in the [Azure Government portal](https://portal.azure.us). 
+- Step 4: 
+    - Before configuring the sample, you must make sure your [Visual Studio is connected to Azure Government](https://docs.microsoft.com/azure/azure-government/documentation-government-get-started-connect-with-vs).     
+    - Navigate to the `OnboardingController.cs` file. In the `authorizationRequest` method replace "https://login.microsoftonline.com/" with "https://login.microsoftonline.us/". Make the same edit in the `AuthenticationContext` definition. 
+    - Navigate to the `App_Start` folder and open the `Startup.Auth.cs` file. Replace the `Authority` value with "https://login.microsoftonline.us/common/". 
+    
+Once those changes have been accounted for, you should be able to run this sample on Azure Government.  
 ## About The Code
 
 The application is subdivided in three main functional areas:
