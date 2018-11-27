@@ -11,7 +11,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 
-namespace dotnet_webapp_multitenant_oidc
+namespace TodoListWebApp
 {
     public partial class Startup
     {

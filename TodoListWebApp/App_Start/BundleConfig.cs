@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace dotnet_webapp_multitenant_oidc
+namespace TodoListWebApp
 {
     public class BundleConfig
     {

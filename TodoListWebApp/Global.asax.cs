@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace dotnet_webapp_multitenant_oidc
+namespace TodoListWebApp
 {
     public class MvcApplication : System.Web.HttpApplication
     {
