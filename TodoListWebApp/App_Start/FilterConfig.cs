@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace dotnet_webapp_multitenant_openidconnect
+namespace dotnet_webapp_multitenant_oidc
 {
     public class FilterConfig
     {

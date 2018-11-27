@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace dotnet_webapp_multitenant_openidconnect.Controllers
+namespace dotnet_webapp_multitenant_oidc.Controllers
 {
     [Authorize]
     public class HomeController : Controller

@@ -7,7 +7,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.Owin.Security;
 
-namespace dotnet_webapp_multitenant_openidconnect.Controllers
+namespace dotnet_webapp_multitenant_oidc.Controllers
 {
     public class AccountController : Controller
     {

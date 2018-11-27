@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(dotnet_webapp_multitenant_openidconnect.Startup))]
-
-namespace dotnet_webapp_multitenant_openidconnect
+namespace dotnet_webapp_multitenant_oidc
 {
     public partial class Startup
     {
