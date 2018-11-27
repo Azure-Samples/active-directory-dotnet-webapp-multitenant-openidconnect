@@ -2,8 +2,10 @@
   "Sample": {
     "Title": "Build a multi-tenant SaaS web application using Azure AD & OpenID Connect",
     "Level": 200,
-    "Client": ".NET 4.6.1 Web App (MVC)",
-    "Service": "ASP.NET Web API"
+    "Client": ".NET Web App (MVC)",
+    "Service": "ASP.NET Web API",    
+    "RepositoryUrl": "active-directory-dotnet-webapp-multitenant-openidconnect",
+    "Endpoint": "AAD v1.0"
   },
 
   /*
@@ -12,11 +14,12 @@
   "AADApps": [
     {
       "Id": "service",
-      "Name": "active-directory-dotnet-webapp-multitenant-openidconnect",
+      "Name": "TodoListWebApp_MT",
+      "Kind": "WebApp",
       "IsPublicClient": false,
       "HomePage": "https://localhost:44302/",
       "ReplyUrls": "https://localhost:44302/",
-      "LogoutUrl": "https://localhost:44322/Account/EndSession",
+      "LogoutUrl": "https://localhost:44302/Account/EndSession",
       "PasswordCredentials": "Auto",
       "IsAvailableToOtherTenants":true,
       "RequiredResourcesAccess": [

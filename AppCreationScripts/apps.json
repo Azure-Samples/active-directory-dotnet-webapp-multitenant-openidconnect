@@ -16,7 +16,7 @@
       "IsPublicClient": false,
       "HomePage": "https://localhost:44302/",
       "ReplyUrls": "https://localhost:44302/",
-      "LogoutUrl": "https://localhost:44322/Account/EndSession",
+      "LogoutUrl": "https://localhost:44302/Account/EndSession",
       "PasswordCredentials": "Auto",
       "IsAvailableToOtherTenants":true,
       "RequiredResourcesAccess": [

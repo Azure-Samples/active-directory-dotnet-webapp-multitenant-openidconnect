@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.Owin.Security;
+using TodoListWebApp.Models;
 
 namespace TodoListWebApp.Controllers
 {
@@ -39,6 +40,24 @@ namespace TodoListWebApp.Controllers
             }
 
             return View();
+        }
+
+
+        /// <summary>
+        /// Called by Azure AD. Here we end the user's session, but don't redirect to AAD for sign out.
+        /// </summary>
+        public void EndSession()
+        {
+            this.RemoveCachedTokens();
+        }
+
+        /// <summary>
+        /// Remove all cache entries for this user.
+        /// </summary>
+        private void RemoveCachedTokens()
+        {
+            MSALTokenCache appTokenCache = new MSALTokenCache(Startup.clientId);
+            appTokenCache.Clear();
         }
     }
 }

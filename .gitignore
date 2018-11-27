@@ -216,3 +216,4 @@ pip-log.txt
 /.vs
 /AppCreationScripts/Steps.md
 /AppCreationScripts/createdApps.html
+/TodoListWebApp/App_Data
