@@ -1,18 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿/************************************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2015 Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+***********************************************************************************************/
+
+using Microsoft.Graph;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.OpenIdConnect;
+using System;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Threading.Tasks;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OpenIdConnect;
 using TodoListWebApp.Models;
-using Microsoft.Identity.Client;
-using Microsoft.Graph;
-using System.Net.Http.Headers;
 
 namespace TodoListWebApp.Controllers
 {
@@ -24,27 +45,23 @@ namespace TodoListWebApp.Controllers
         // GET: UserProfile
         public async Task<ActionResult> Index()
         {
-            string tenantID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             string userObjectID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
 
             try
             {
-                Uri servicePointUri = new Uri(Startup.graphResourceID);
-                Uri serviceRoot = new Uri(servicePointUri, tenantID);
                 GraphServiceClient graphServiceClient = GetAuthenticatedGraphServiceClient();
 
                 // use the token for querying the graph to get the user details
-
                 User me = await graphServiceClient.Me.Request().GetAsync();
-                
+
                 return View(me);
             }
-            catch (MsalServiceException eee)
+            catch (AdalException eee)
             {
                 // if the above failed, the user needs to explicitly re-authenticate for the app to obtain the required token
                 ViewBag.Error = "An error has occurred. Details: " + eee.Message;
                 return View("Relogin");
-            }            
+            }
             catch (Exception)
             {
                 // Return to error page.
@@ -66,21 +83,12 @@ namespace TodoListWebApp.Controllers
             string userObjectID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
 
             // get a token for the Graph without triggering any user interaction (from the cache, via multi-resource refresh token, etc)
-            TokenCache userTokenCache = new MSALSessionCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
-            ConfidentialClientApplication app = new ConfidentialClientApplication(Startup.clientId, Startup.redirectUri, new ClientCredential(Startup.appKey), userTokenCache, null);            
-            AuthenticationResult result = null;
-            var accounts = await app.GetAccountsAsync();
-            
-            try
-            {
-                result = await app.AcquireTokenSilentAsync(Startup.Scopes, accounts.FirstOrDefault());
-            }
-            catch (Exception ex)
-            {
-                Response.Write(ex.Message);
-            }
+            ClientCredential clientcred = new ClientCredential(Startup.clientId, Startup.appKey);
 
-            return result?.AccessToken;
+            // initialize AuthenticationContext with the token cache of the currently signed in user, as kept in the token cache
+            AuthenticationContext authenticationContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+            AuthenticationResult authenticationResult = await authenticationContext.AcquireTokenSilentAsync(Startup.graphResourceID, clientcred, new UserIdentifier(userObjectID, UserIdentifierType.UniqueId));
+            return authenticationResult.AccessToken;
         }
 
         public GraphServiceClient GetAuthenticatedGraphServiceClient()

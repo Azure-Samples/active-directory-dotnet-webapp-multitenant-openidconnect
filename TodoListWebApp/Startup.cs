@@ -10,9 +10,9 @@ namespace TodoListWebApp
     {
         public static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
         public static string appKey = ConfigurationManager.AppSettings["ida:ClientSecret"];
-        public static string graphResourceID = "https://graph.microsoft.com";
+        public static string graphResourceID = ConfigurationManager.AppSettings["GraphAPIEndpoint"];
         public static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
-        public static string[] Scopes = { "User.Read", "User.Read.All" };
+        
         public static string aadInstance = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:AADInstance"]);
 
         public void Configuration(IAppBuilder app)

@@ -8,8 +8,8 @@ using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.Owin.Security;
 using TodoListWebApp.Models;
 using System.Security.Claims;
-using Microsoft.Identity.Client;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace TodoListWebApp.Controllers
 {
@@ -25,9 +25,9 @@ namespace TodoListWebApp.Controllers
             }
         }
 
-        public async Task SignOut()
+        public void SignOut()
         {
-            await this.RemoveCachedTokensAsync();
+            this.RemoveCachedTokens();
 
             string callbackUrl = Url.Action("SignOutCallback", "Account", routeValues: null, protocol: Request.Url.Scheme);
             
@@ -51,27 +51,20 @@ namespace TodoListWebApp.Controllers
         /// <summary>
         /// Called by Azure AD. Here we end the user's session, but don't redirect to AAD for sign out.
         /// </summary>
-        public async Task EndSession()
+        public void EndSession()
         {
-            await this.RemoveCachedTokensAsync();
+            this.RemoveCachedTokens();
         }
 
         /// <summary>
         /// Remove all cache entries for this user.
         /// </summary>
-        private async Task RemoveCachedTokensAsync()
+        private void RemoveCachedTokens()
         {
             string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-            TokenCache userTokenCache = new MSALSessionCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
-
-            ConfidentialClientApplication app = new ConfidentialClientApplication(Startup.clientId, Startup.redirectUri, new ClientCredential(Startup.appKey), userTokenCache, null);
-
-            var accounts = await app.GetAccountsAsync();
-            while (accounts.Any())
-            {
-                await app.RemoveAsync(accounts.First());
-                accounts = await app.GetAccountsAsync();
-            }
+            string tenantID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
+            AuthenticationContext authContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+            authContext.TokenCache.Clear();
         }
     }
 }
