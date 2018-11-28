@@ -7,6 +7,9 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.Owin.Security;
 using TodoListWebApp.Models;
+using System.Security.Claims;
+using Microsoft.Identity.Client;
+using System.Threading.Tasks;
 
 namespace TodoListWebApp.Controllers
 {
@@ -22,10 +25,12 @@ namespace TodoListWebApp.Controllers
             }
         }
 
-        public void SignOut()
+        public async Task SignOut()
         {
-            string callbackUrl = Url.Action("SignOutCallback", "Account", routeValues: null, protocol: Request.Url.Scheme);
+            await this.RemoveCachedTokensAsync();
 
+            string callbackUrl = Url.Action("SignOutCallback", "Account", routeValues: null, protocol: Request.Url.Scheme);
+            
             HttpContext.GetOwinContext().Authentication.SignOut(
                 new AuthenticationProperties { RedirectUri = callbackUrl },
                 OpenIdConnectAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
@@ -46,18 +51,27 @@ namespace TodoListWebApp.Controllers
         /// <summary>
         /// Called by Azure AD. Here we end the user's session, but don't redirect to AAD for sign out.
         /// </summary>
-        public void EndSession()
+        public async Task EndSession()
         {
-            this.RemoveCachedTokens();
+            await this.RemoveCachedTokensAsync();
         }
 
         /// <summary>
         /// Remove all cache entries for this user.
         /// </summary>
-        private void RemoveCachedTokens()
+        private async Task RemoveCachedTokensAsync()
         {
-            MSALTokenCache appTokenCache = new MSALTokenCache(Startup.clientId);
-            appTokenCache.Clear();
+            string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
+            TokenCache userTokenCache = new MSALSessionCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
+
+            ConfidentialClientApplication app = new ConfidentialClientApplication(Startup.clientId, Startup.redirectUri, new ClientCredential(Startup.appKey), userTokenCache, null);
+
+            var accounts = await app.GetAccountsAsync();
+            while (accounts.Any())
+            {
+                await app.RemoveAsync(accounts.First());
+                accounts = await app.GetAccountsAsync();
+            }
         }
     }
 }
