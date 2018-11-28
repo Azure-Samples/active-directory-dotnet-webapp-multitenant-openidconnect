@@ -61,10 +61,14 @@ namespace TodoListWebApp.Controllers
         /// </summary>
         private void RemoveCachedTokens()
         {
-            string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-            string tenantID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
-            AuthenticationContext authContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
-            authContext.TokenCache.Clear();
+            string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string tenantID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value;
+
+            if (!string.IsNullOrWhiteSpace(signedInUserID) && !string.IsNullOrWhiteSpace(tenantID))
+            {
+                AuthenticationContext authContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+                authContext.TokenCache.Clear();
+            }
         }
     }
 }

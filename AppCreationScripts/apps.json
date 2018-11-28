@@ -22,7 +22,7 @@
       "RequiredResourcesAccess": [
         {
           "Resource": "Microsoft Graph",
-          "DelegatedPermissions": [ "User.Read" ]
+          "DelegatedPermissions": [ "User.Read", "User.Read.All" ]
         }
       ]
     }
@@ -43,6 +43,10 @@
         {
           "key": "ida:ClientId",
           "value": ".AppId"
+        },
+        {
+          "key": "ida:ClientSecret",
+          "value": ".AppKey"
         }
       ]
     }    

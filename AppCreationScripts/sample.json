@@ -3,7 +3,7 @@
     "Title": "Build a multi-tenant SaaS web application using Azure AD & OpenID Connect",
     "Level": 200,
     "Client": ".NET Web App (MVC)",
-    "Service": "ASP.NET Web API",    
+    "Service": "Microsoft Graph",    
     "RepositoryUrl": "active-directory-dotnet-webapp-multitenant-openidconnect",
     "Endpoint": "AAD v1.0"
   },
@@ -18,14 +18,14 @@
       "Kind": "WebApp",
       "IsPublicClient": false,
       "HomePage": "https://localhost:44302/",
-      "ReplyUrls": "https://localhost:44302/",
+      "ReplyUrls": "https://localhost:44302/,https://localhost:44302/Onboarding/ProcessCode",
       "LogoutUrl": "https://localhost:44302/Account/EndSession",
       "PasswordCredentials": "Auto",
       "IsAvailableToOtherTenants":true,
       "RequiredResourcesAccess": [
         {
           "Resource": "Microsoft Graph",
-          "DelegatedPermissions": [ "User.Read" ]
+          "DelegatedPermissions": [ "User.Read", "User.Read.All" ]
         }
       ]
     }
@@ -46,6 +46,10 @@
         {
           "key": "ida:ClientId",
           "value": ".AppId"
+        },
+        {
+          "key": "ida:ClientSecret",
+          "value": ".AppKey"
         }
       ]
     }    
