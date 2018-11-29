@@ -25,27 +25,29 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IdentityModel.Claims;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
-using System.Web.Helpers;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using TodoListWebApp.DAL;
+using TodoListWebApp.Models;
 
-namespace TodoListWebApp
+namespace TodoListWebApp.DAL
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class TodoListWebAppContext : DbContext
     {
-        protected void Application_Start()
+        public TodoListWebAppContext()
+            : base("DefaultConnection")
+        { }
+
+        public DbSet<Todo> Todoes { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<UserTokenCache> UserTokenCacheList { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<TodoListWebAppContext>(new TodoListWebAppInitializer());
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }
     }
 }

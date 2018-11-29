@@ -33,14 +33,16 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using TodoListWebApp.DAL;
 using TodoListWebApp.Models;
+using User = Microsoft.Graph.User;
 
 namespace TodoListWebApp.Controllers
 {
     [Authorize]
     public class UserProfileController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private TodoListWebAppContext db = new TodoListWebAppContext();
 
         // GET: UserProfile
         public async Task<ActionResult> Index()

@@ -24,28 +24,20 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.IdentityModel.Claims;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-using System.Web.Helpers;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using TodoListWebApp.DAL;
 
-namespace TodoListWebApp
+namespace TodoListWebApp.Models
 {
-    public class MvcApplication : System.Web.HttpApplication
+    /// <summary>
+    /// Entity for keeping track of individual users on-boarded as customers of the app
+    /// </summary>
+    public class User
     {
-        protected void Application_Start()
-        {
-            Database.SetInitializer<TodoListWebAppContext>(new TodoListWebAppInitializer());
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
-        }
+        [Key]
+        public string UPN { get; set; }
+
+        public string TenantID { get; set; }
     }
 }

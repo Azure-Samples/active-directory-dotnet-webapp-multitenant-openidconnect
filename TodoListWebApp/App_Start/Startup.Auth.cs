@@ -28,9 +28,13 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using System;
+using System.Linq;
+using System.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using System.Web;
+using TodoListWebApp.DAL;
 using TodoListWebApp.Models;
+using System.IdentityModel.Claims;
 
 namespace TodoListWebApp
 {
@@ -39,7 +43,8 @@ namespace TodoListWebApp
         private string authority = aadInstance + "common";
         private const string objectIdClaimType = "http://schemas.microsoft.com/identity/claims/objectidentifier";
 
-        private ApplicationDbContext db = new ApplicationDbContext();
+        //private ApplicationDbContext db = new ApplicationDbContext();
+        private TodoListWebAppContext db = new TodoListWebAppContext();
 
         public void ConfigureAuth(IAppBuilder app)
         {
@@ -62,8 +67,32 @@ namespace TodoListWebApp
                     },
                     Notifications = new OpenIdConnectAuthenticationNotifications()
                     {
+                        RedirectToIdentityProvider = (context) =>
+                        {
+                            // This ensures that the address used for sign in and sign out is picked up dynamically from the request
+                            // this allows you to deploy your app (to Azure Web Sites, for example)without having to change settings
+                            // Remember that the base URL of the address used here must be provisioned in Azure AD beforehand.
+                            string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase + "/";
+                            context.ProtocolMessage.RedirectUri = appBaseUrl;
+                            context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+                            return Task.FromResult(0);
+                        },
                         SecurityTokenValidated = (context) =>
                         {
+                            // retrieve caller data from the incoming principal
+                            string issuer = context.AuthenticationTicket.Identity.FindFirst("iss").Value;
+                            string UPN = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.Name).Value;
+                            string tenantID = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
+
+                            if (
+                                // the caller comes from an admin-consented, recorded issuer
+                                (db.Tenants.FirstOrDefault(a => ((a.IssValue == issuer) && (a.AdminConsented))) == null)
+                                // the caller is recorded in the db of users who went through the individual on-boarding
+                                && (db.Users.FirstOrDefault(b => ((b.UPN == UPN) && (b.TenantID == tenantID))) == null)
+                                )
+                                // the caller was neither from a trusted issuer or a registered user - throw to block the authentication flow
+                                throw new SecurityTokenValidationException();
+
                             return Task.FromResult(0);
                         },
                         AuthorizationCodeReceived = (context) =>
@@ -73,7 +102,7 @@ namespace TodoListWebApp
                             string tenantID = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
                             string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(System.IdentityModel.Claims.ClaimTypes.NameIdentifier).Value;
 
-                            AuthenticationContext authContext = new AuthenticationContext(aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+                            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext authContext = new Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext(aadInstance + tenantID, new ADALTokenCache(signedInUserID));
                             AuthenticationResult result = authContext.AcquireTokenByAuthorizationCodeAsync(
                                 code, new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path)), credential, graphResourceID).Result;
 
@@ -87,21 +116,6 @@ namespace TodoListWebApp
                         }
                     }
                 });
-        }
-
-        private static string EnsureTrailingSlash(string value)
-        {
-            if (value == null)
-            {
-                value = string.Empty;
-            }
-
-            if (!value.EndsWith("/", StringComparison.Ordinal))
-            {
-                return value + "/";
-            }
-
-            return value;
         }
     }
 }

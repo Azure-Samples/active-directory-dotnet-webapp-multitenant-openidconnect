@@ -50,6 +50,10 @@
         {
           "key": "ida:ClientSecret",
           "value": ".AppKey"
+        },
+        {
+          "key": "ida:RedirectUri",
+          "value": "service.HomePage"
         }
       ]
     }    
