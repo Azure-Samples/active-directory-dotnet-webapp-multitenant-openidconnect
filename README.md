@@ -1,115 +1,168 @@
 ---
 services: active-directory
 platforms: dotnet
-author: dstrockis
+author: jmprieur
+level: 200
+client: .NET Web App (MVC)
+service: Microsoft Graph
+endpoint: AAD v1.0
 ---
 
 # Build a multi-tenant SaaS web application using Azure AD & OpenID Connect
 
-This sample shows how to build a multi-tenant .Net MVC web application that uses OpenID Connect to sign up and sign in users from any Azure Active Directory tenant, using the ASP.Net OpenID Connect OWIN middleware and the Active Directory Authentication Library (ADAL) for .NET.
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20active-directory-dotnet-webapp-multitenant-openidconnect)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=729)
+
+## About this sample
+
+### Overview
+
+This sample shows how to build a multi-tenant .Net MVC web application that uses OpenID Connect to sign up and sign in users from any Azure Active Directory tenant, using the ASP.Net OpenID Connect OWIN middleware and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
 
 > Looking for previous versions of this code sample? Check out the tags on the [releases](../../releases) GitHub page.
 
 For more information about how the protocols work in this scenario and other scenarios, see the [Authentication Scenarios for Azure AD](https://azure.microsoft.com/documentation/articles/active-directory-authentication-scenarios/) document.
 
-## How To Run This Sample
+![Overview](./ReadmeFiles/topology.png)
+
+### Scenario
+
+This sample demonstrates a multi-tenant .NET Web App (MVC) application calling The Microsoft Graph from different Azure AD tenants.
+
+1. The .Net client .NET Web App (MVC) application uses the Active Directory Authentication Library (ADAL) to obtain a JWT access token from Azure Active Directory (Azure AD):
+2. The access token is used as a bearer token to authenticate the user when calling the Microsoft Graph.
+
+## How to run this sample
+
+To run this sample, you'll need:
 
 >[!Note] If you want to run this sample on **Azure Government**, navigate to the "Azure Government Deviations" section at the bottom of this page.
 >
 >
 >
 
-Getting started is simple!  To run this sample you will need:
-- Visual Studio 2013
+- [Visual Studio 2017](https://aka.ms/vsdownload)
 - An Internet connection
-- An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/) 
-- A user account in your Azure AD tenant. This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now.
+- An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
+- A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
 ### Step 1:  Clone or download this repository
 
 From your shell or command line:
 
-`git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git`
+```Shell
+git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git`
+```
+
+or download and exact the repository .zip file.
+
+> Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
 ### Step 2:  Register the sample with your Azure Active Directory tenant
 
-1. Sign in to the [Azure portal](https://portal.azure.com).
-2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
-3. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
-4. Click on **App registrations** and choose **Add**.
-5. Enter a friendly name for the application, for example 'TodoListWebApp_MT' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`. Click on **Create** to create the application.
-6. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
-7. Find the Application ID value and copy it to the clipboard.
-8. In the same page, change the "Logout Url" to `https://localhost:44302/Account/EndSession`.  This is the default single sign out URL for this sample.
-9. Find "multi-tenanted" switch and flip it to yes. 
-10. For the App ID URI, enter `https://<your_tenant_domain>/TodoListWebApp_MT`, replacing `<your_tenant_domain>` with the domain of your Azure AD tenant (either in the form `<tenant_name>.onmicrosoft.com` or your own custom domain if you registered it in Azure Active Directory). 
-11. Configure Permissions for your application - in the Settings menu, choose the 'Required permissions' section, click on **Add**, then **Select an API**, and select 'Microsoft Graph' (this is the Graph API). Then, click on  **Select Permissions** and select 'Sign in and read user profile'.
+There is one project in this sample. To register it, you can:
 
-Don't close the browser yet, as we will still need to work with the portal for few more steps. 
+- either follow the steps in the paragraphs below ([Step 2](#step-2--register-the-sample-with-your-azure-active-directory-tenant) and [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant))
+- or use PowerShell scripts that:
+  - **automatically** create for you the Azure AD applications and related objects (passwords, permissions, dependencies)
+  - modify the Visual Studio projects' configuration files.
 
-### Step 3:  Provision a key for your app in your Azure Active Directory tenant
+If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
 
-The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant.
+#### Choose the Azure AD tenant where you want to create your applications
 
-From the Settings menu, choose **Keys** and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Portal.
+As a first step you'll need to:
 
-After provisioning the key, navigate to the "Reply URLs" section and add these two reply URLs:
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
+1. If your account gives you access to more than one tenant, select your account in the top right corner, and set your portal session to the desired Azure AD tenant
+   (using **Switch Directory**).
+1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)**.
 
-    -"https://localhost:44302/"
-    -"https://localhost:44302/Onboarding/ProcessCode" 
-    
-Leave the browser open to this page. 
+#### Register the service app (TodoListWebApp_MT)
 
-### Step 4:  Configure the sample to use your Azure Active Directory tenant
+1. In **App registrations (Preview)** page, select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListWebApp_MT`.
+   - In the **Supported account types** section, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+   - In the Redirect URI (optional) section, select **Web** in the combo-box.
+   - In the Redirect URI (optional) section, select **Web** in the combo-box and enter the following redirect URIs.
+       - `https://localhost:44302/`
+       - `https://localhost:44302/Onboarding/ProcessCode`
+1. Select **Register** to create the application.
+   - Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. In the list of pages for the app, select **Authentication**.
+   - In the **Advanced settings** section set **Logout URL** to `https://localhost:44302/Account/EndSession`
+   - In the **Advanced settings** | **Implicit grant** section, check **Access tokens** and **ID tokens** as this sample requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)to be enabled to
+   sign-in the user, and call an API.
+1. Select **Save**.
+1. The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant.From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
 
-At this point we are ready to paste into the VS project the settings that will tie it to its entry in your Azure AD tenant. 
+   - Type a key description (of instance `app secret`),
+   - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
+   - When you press the **Add** button, the key value will be displayed, copy, and save the value in a safe location.
+   - You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means,
+     so record it as soon as it is visible from the Azure portal.
+1. In the list of pages for the app, select **API permissions**
+   - Click the **Add a permission** button and then,
+   - Ensure that the **Microsoft APIs** tab is selected
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**, **User.Read.All**. Use the search box if necessary.
+   - Select the **Add permissions** button
 
-1. Open the solution in Visual Studio 2017.
-2. Open the `web.config` file.
-3. Find the app key `ida:Password` and replace the value you copied in step 4.
-4. Go back to the portal, find the APPLICATION ID field and copy its content to the clipboard
-5. Find the app key `ida:ClientId` and replace the value with the APPLICATION ID from the Azure portal.
-6. Navigate to the `Dal` folder and open the `ToDoListWebAppContext` file. In the `TodoListWebAppContext()` definition set the base to the connection string for the SQL database that you want to use. If you want to use your local SQL database, your base definition should look like this: `base("Server = (localdb)\\mssqllocaldb; Database=Inventory;Trusted_Connection=True;MultipleActiveResultSets=true")`. 
+### Step 3:  Configure the sample to use your Azure AD tenant
 
-### Step 5:  [optional] Create an Azure Active Directory test tenant 
+In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+
+Open the solution in Visual Studio to configure the projects
+
+#### Configure the service project
+
+1. Open the `TodoListWebApp\Web.Config` file
+1. Find the app key `ida:ClientId` and replace the existing value with the application ID (clientId) of the `TodoListWebApp_MT` application copied from the Azure portal.
+1. Find the app key `ida:ClientSecret` and replace the existing value with the key you saved during the creation of the `TodoListWebApp_MT` app, in the Azure portal.
+1. Find the app key `ida:RedirectUri` and replace the existing value with the base address of the TodoListWebApp_MT project (by default `https://localhost:44302/`).
+
+### Step 4:  [optional] Create an Azure Active Directory test tenant
 
 This sample shows how to take advantage of the consent model in Azure AD to make an application available to any user from any organization with a tenant in Azure AD. To see that part of the sample in action, you need to have access to user accounts from a tenant that is different from the one you used for developing the application. The simplest way of doing that is to create a new directory tenant in your Azure subscription (just navigate to the main Active Directory page in the portal and click Add) and add test users.
 This step is optional as you can also use accounts from the same directory, but if you do you will not see the consent prompts as the app is already approved. 
 
-### Step 6:  Run the sample
+### Step 5: Run the sample
 
-The sample implements two distinct tasks: the onboarding of a new customer and regular sign in & use of the application.
+Clean the solution, rebuild the solution, and run it. The sample implements two distinct tasks: the onboarding of a new customer and regular sign in & use of the application.
 
-####  Sign up
+#### Sign up
+
 Start the application. Click on Sign Up.
 You will be presented with a form that simulates an onboarding process. Here you can choose if you want to follow the "admin consent" flow (the app gets provisioned for all the users in one organization - requires you to sign up using an administrator) or the "user consent" flow (the app gets provisioned for your user only).
 Click the SignUp button. You'll be transferred to the Azure AD portal. Sign in as the user you want to use for consenting. If the user is from a tenant that is different from the one where the app was developed, you will be presented with a consent page. Click OK. You will be transported back to the app, where your registration will be finalized.
-####  Sign in
+
+#### Sign in
+
 Once you signed up, you can either click on the Todo tab or the sign in link to gain access to the application. Note that if you are doing this in the same session in which you signed up, you will automatically sign in with the same account you used for signing up. If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent). 
-
-## How To Deploy This Sample to Azure
-
-Coming soon.
 
 ## Azure Government Deviations
 
 In order to run this sample on Azure Government you can follow through the steps above with a few variations:
 
-- Step 2: 
-   - You must register this sample for your AAD Tenant in Azure Government by following Step 2 above in the [Azure Government portal](https://portal.azure.us). 
-- Step 4: 
-    - Before configuring the sample, you must make sure your [Visual Studio is connected to Azure Government](https://docs.microsoft.com/azure/azure-government/documentation-government-get-started-connect-with-vs).     
-    - Navigate to the `OnboardingController.cs` file. In the `authorizationRequest` method replace "https://login.microsoftonline.com/" with "https://login.microsoftonline.us/". Make the same edit in the `AuthenticationContext` definition. 
-    - Navigate to the `App_Start` folder and open the `Startup.Auth.cs` file. Replace the `Authority` value with "https://login.microsoftonline.us/common/". 
-    
+- [Step 2]:
+    -You must register this sample for your Azure AD Tenant in Azure Government by following Step 2 above in the [Azure Government portal](https://portal.azure.us).
+- [Step 4]:
+    - Before configuring the sample, you must make sure your [Visual Studio is connected to Azure Government](https://docs.microsoft.com/azure/azure-government/documentation-government-get-started-connect-with-vs).
+    - Open the `TodoListWebApp\Web.Config` file
+    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the sovereign cloud you want to target.
+    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the sovereign cloud you want to target.
+    - Find the app key `ida:IssuerEndpoint` and replace the existing value with the corresponding issuer endpoint for the sovereign cloud you want to target.
+
 Once those changes have been accounted for, you should be able to run this sample on Azure Government.  
+
 ## About The Code
 
 The application is subdivided in three main functional areas:
 
 1. Common assets
-2. Sign up
-3. Todo editor
+1. Sign up
+1. Todo editor
 
 Let's briefly list the noteworthy elements in each area. For mroe details please refer to the comments in the code.
 
@@ -136,7 +189,7 @@ Notable code:
        ValidateIssuer = false,
     }
 
-That code turns off the default Issuer validation, given that in the multitenant case the list of acceptable issuer values is dynamic and cannot be acquired via metadata (as it is instead the case for the single organization case). 
+That code turns off the default Issuer validation, given that in the multitenant case the list of acceptable issuer values is dynamic and cannot be acquired via metadata (as it is instead the case for the single organization case).
 
     RedirectToIdentityProvider = (context) =>
     {
@@ -150,5 +203,57 @@ That handler for `RedirectToIdentityProvider` assigns to the `Redirect_Uri` and 
 
 Finally: the implementation of `SecurityTokenValidated` contains the custom caller validation logic, comparing the incoming token with the database of trusted tenants and registered users and interrupting the authentication sequence if a match is not found.
 
+All of the OWIN middleware in this project is created as a part of the open source [Katana project](https://github.com/aspnet/AspNetKatana/).  You can read more about OWIN [here](http://owin.org).
 
-All of the OWIN middleware in this project is created as a part of the open source [Katana project](http://katanaproject.codeplex.com).  You can read more about OWIN [here](http://owin.org).
+### Create and publish the `TodoListWebApp_MT` to an Azure Web Site
+
+1. Sign in to the [Azure portal](https://portal.azure.com).
+1. Click **Create a resource** in the top left-hand corner, select **Web + Mobile** --> **Web App**, select the hosting plan and region, and give your web site a name, for example, `TodoListWebApp_MT-contoso.azurewebsites.net`.  Click Create Web Site.
+1.Choose **SQL Database**, click on "Create a new database", enter `DefaultConnection` as the **DB Connection String Name**.
+1. Select or create a database server, and enter server login credentials.
+1. Once the web site is created, click on it to manage it.  For this set of steps, download the publish profile by clicking **Get publish profile** and save it.  Other deployment mechanisms, such as from source control, can also be used.
+1. Switch to Visual Studio and go to the TodoListWebApp_MT project.  Right click on the project in the Solution Explorer and select **Publish**.  Click **Import Profile** on the bottom bar, and import the publish profile that you downloaded earlier.
+1. Click on **Settings** and in the `Connection tab`, update the Destination URL so that it is https, for example [https://TodoListWebApp_MT-contoso.azurewebsites.net](https://TodoListWebApp_MT-contoso.azurewebsites.net). Click Next.
+1. On the Settings tab, make sure `Enable Organizational Authentication` is NOT selected.  Click **Save**. Click on **Publish** on the main screen.
+1. Visual Studio will publish the project and automatically open a browser to the URL of the project.  If you see the default web page of the project, the publication was successful.
+
+### Update the Active Directory tenant application registration for `TodoListWebApp_MT`
+
+1. Navigate to the [Azure portal](https://portal.azure.com).
+1. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant containing the `TodoListWebApp_MT` application.
+1. On the applications tab, select the `TodoListWebApp_MT` application.
+1. In the **Settings** | page for your application, update the Logout URL fields with the address of your service, for example [https://TodoListWebApp_MT-contoso.azurewebsites.net](https://TodoListWebApp_MT-contoso.azurewebsites.net)
+1. From the *Settings -> Properties* menu, update the **Home page URL**, to the address of your service, for example [https://TodoListWebApp_MT-contoso.azurewebsites.net](https://TodoListWebApp_MT-contoso.azurewebsites.net). Save the configuration.
+1. Add the same URL in the list of values of the *Settings -> Reply URLs* menu
+
+## Community Help and Support
+
+Use [Stack Overflow](http://stackoverflow.com/questions/tagged/adal) to get support from the community.
+Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
+Make sure that your questions or comments are tagged with [`adal` `msal` `dotnet`].
+
+If you find a bug in the sample, please raise the issue on [GitHub Issues](../../issues).
+
+To provide a recommendation, visit the following [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
+
+## Contributing
+
+If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.md).
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## More information
+
+For more information, see ADAL.NET's conceptual documentation:
+
+- [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
+- [Understanding Azure AD application consent experiences](https://docs.microsoft.com/en-us/azure/active-directory/develop/application-consent-experience)
+- [How to: Sign in any Azure Active Directory user using the multi-tenant application pattern](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant)
+- [Application and service principal objects in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals)
+- [Quickstart: Register an application with the Microsoft identity platform (Preview)](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app)
+- [Quickstart: Configure a client application to access web APIs (Preview)](https://docs.microsoft.com/azure/active-directory/develop/quickstart-configure-app-access-web-apis)
+- [Recommended pattern to acquire a token](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-pattern-to-acquire-a-token)
+- [Customizing Token cache serialization](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/Token-cache-serialization)
+- [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud)
+
+For more information about how OAuth 2.0 protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
