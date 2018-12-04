@@ -21,7 +21,7 @@ When it comes to developing apps, developers can choose to configure their app t
 - Single-tenant apps are only available in the tenant they were registered in, also known as their home tenant.
 - Multi-tenant apps are available to users in both their home tenant and other tenants.
 
-For more information about about apps and tenancy, refer to [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
+For more information about apps and tenancy, see [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
 
 This sample shows how to build a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) .Net MVC web application that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign up and sign in users from any Azure Active Directory tenant, using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
 
@@ -82,7 +82,7 @@ If you want to use this automation, read the instructions in [App Creation Scrip
 As a first step you'll need to:
 
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
-1. If your account gives you access to more than one tenant, select your account in the top right corner, and set your portal session to the desired Azure AD tenant
+1. If your account gives you access to more than one tenant, select your account in the top-right corner, and set your portal session to the desired Azure AD tenant
    (using **Switch Directory**).
 1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)**.
 
@@ -100,10 +100,10 @@ As a first step you'll need to:
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**.
    - In the **Advanced settings** section set **Logout URL** to `https://localhost:44302/Account/EndSession`
-   - In the **Advanced settings** | **Implicit grant** section, check **Access tokens** and **ID tokens** as this sample requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)to be enabled to
+   - In the **Advanced settings** | **Implicit grant** section, check **Access tokens** and **ID tokens** as this sample requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
    sign-in the user, and call an API.
 1. Select **Save**.
-1. The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant.From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
+1. The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
 
    - Type a key description (of instance `app secret`),
    - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
@@ -160,19 +160,19 @@ You will be transported back to the app, where your registration will be finaliz
 
 #### Sign in
 
-Once you signed up, you can either click on the `Todo` tab or the `sign in` link to gain access to the application. Note that if you are doing this in the same session in which you signed up, you will automatically sign in with the same account you used for signing up. 
+Once you signed up, you can either click on the `Todo` tab or the `sign in` link to gain access to the application. Note that if you are selecting **sign in** in the same session in which you signed up, you will automatically sign in with the same account you used for signing up.
 
 If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent).
 
 ## National Cloud Deviations
 
-In order to run this sample on a National Cloud you can follow through the steps above with a few variations:
+In order to run this sample on a National Cloud, you can follow through the steps above with a few variations:
 
 1. You must register this sample for your Azure AD Tenant in a [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud) by following [[Step 2]](#step-2-register-the-sample-with-your-azure-active-directory-tenant) above in the National cloud of your choice.
-1. Then follow the steps oulined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
-    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the sovereign cloud you want to target.
-    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the sovereign cloud you want to target.
-    - Find the app key `ida:IssuerEndpoint` and replace the existing value with the corresponding issuer endpoint for the sovereign cloud you want to target.
+1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
+    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the national or sovereign cloud you want to target.
+    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the  national or sovereign cloud you want to target.
+    - Find the app key `ida:IssuerEndpoint` and replace the existing value with the corresponding issuer endpoint for the  national or sovereign cloud you want to target.
 
 Once those changes have been accounted for, you should be able to run this sample in a National Cloud of your choice.  
 
@@ -184,7 +184,7 @@ The application is subdivided in three main functional areas:
 1. Sign up
 1. Todo editor
 
-Let's briefly list the noteworthy elements in each area. For mroe details please refer to the comments in the code.
+Let's briefly list the noteworthy elements in each area. For more details, please refer to the comments in the code.
 
 ### Common assets
 
@@ -193,14 +193,14 @@ The Home controller provides the basis for the main experience, listing all the 
 
 ### Sign Up
 
-The sign up operations are handled by the Onboarding controller.
+The signs up operations are handled by the Onboarding controller.
 The SignUp action and corresponding view simulate a simple onboarding experience, which results in an OAuth2 code grant request that triggers the consent flow.
 The ProcessCode action receives authorization codes from Azure AD and, if they appear valid (see the code comments for details) it creates entries in the application store for the new customer organization/user.
 
 ### Todo editor
 
-This is the application proper.
-Its core resource is the Todo controller, a CRUD editor which leverages claims and the entity framework to manage a personalized list of Todo items for the currently signed in user.
+This component is the application proper.
+Its core resource is the Todo controller, a CRUD editor, which leverages claims and the entity framework to manage a personalized list of Todo items for the currently signed in user.
 The Todo controller is secured via OpenId Connect, according to the logic in App_Start/Startup.Auth.cs.
 Notable code:
 
@@ -219,11 +219,11 @@ That code turns off the default Issuer validation, given that in the case of a m
        return Task.FromResult(0);
     }
 
-That handler for `RedirectToIdentityProvider` assigns to the `Redirect_Uri` and `Post_Logout_Redirect_Uri` (properties used for sign in and sign out locations) URLs that reflect the current address of the application. This allows you to deploy the app to Azure Web Sites or any other location without having to change hardcoded address settings. Note that you do need to add the intended addresses to the Azure AD entry for your application.
+That handler for `RedirectToIdentityProvider` assigns to the `Redirect_Uri` and `Post_Logout_Redirect_Uri` (properties used for sign in and sign out locations) URLs that reflect the current address of the application. This assignment allows you to deploy the app to Azure Web Sites or any other location without having to change hardcoded address settings. You do need to add the intended addresses to the Azure AD entry for your application.
 
 Finally: the implementation of `SecurityTokenValidated` contains the custom caller validation logic, comparing the incoming token with the database of trusted tenants and registered users and interrupting the authentication sequence if a match is not found.
 
-All of the OWIN middleware in this project is created as a part of the open source [Katana project](https://github.com/aspnet/AspNetKatana/).  You can read more about OWIN [here](http://owin.org).
+All of the OWIN middleware in this project is created as a part of the open-source [Katana project](https://github.com/aspnet/AspNetKatana/).  You can read more about OWIN [here](http://owin.org).
 
 ### Create and publish the `TodoListWebApp_MT` to an Azure Web Site
 
@@ -264,7 +264,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## More information
 
-For more information, refer to the following:
+For more information, see the following links:
 
 - [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
 - [Understanding Azure AD application consent experiences](https://docs.microsoft.com/en-us/azure/active-directory/develop/application-consent-experience)
