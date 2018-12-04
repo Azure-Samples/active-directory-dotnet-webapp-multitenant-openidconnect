@@ -204,13 +204,16 @@ Its core resource is the Todo controller, a CRUD editor, which leverages claims 
 The Todo controller is secured via OpenId Connect, according to the logic in App_Start/Startup.Auth.cs.
 Notable code:
 
+```CSharp
     TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
     {
        ValidateIssuer = false,
     }
+```
 
 That code turns off the default Issuer validation, given that in the case of a multitenant app, the list of acceptable [issuer](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#payload-claims) values is dynamic and cannot be acquired via metadata (as it is instead the case of a single tenant).
 
+```CSharp
     RedirectToIdentityProvider = (context) =>
     {
        string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
@@ -218,6 +221,7 @@ That code turns off the default Issuer validation, given that in the case of a m
        context.ProtocolMessage.Post_Logout_Redirect_Uri = appBaseUrl;
        return Task.FromResult(0);
     }
+```
 
 That handler for `RedirectToIdentityProvider` assigns to the `Redirect_Uri` and `Post_Logout_Redirect_Uri` (properties used for sign in and sign out locations) URLs that reflect the current address of the application. This assignment allows you to deploy the app to Azure Web Sites or any other location without having to change hardcoded address settings. You do need to add the intended addresses to the Azure AD entry for your application.
 
