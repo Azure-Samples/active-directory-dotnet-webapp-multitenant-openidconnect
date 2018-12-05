@@ -85,11 +85,11 @@ namespace TodoListWebApp.Controllers
             string userObjectID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
 
             // get a token for the Graph without triggering any user interaction (from the cache, via multi-resource refresh token, etc)
-            ClientCredential clientcred = new ClientCredential(Startup.clientId, Startup.appKey);
+            ClientCredential clientcred = new ClientCredential(Startup.ClientId, Startup.AppKey);
 
             // initialize AuthenticationContext with the token cache of the currently signed in user, as kept in the token cache
-            AuthenticationContext authenticationContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
-            AuthenticationResult authenticationResult = await authenticationContext.AcquireTokenSilentAsync(Startup.graphResourceID, clientcred, new UserIdentifier(userObjectID, UserIdentifierType.UniqueId));
+            AuthenticationContext authenticationContext = new AuthenticationContext(Startup.AadInstance + tenantID, new ADALTokenCache(signedInUserID));
+            AuthenticationResult authenticationResult = await authenticationContext.AcquireTokenSilentAsync(Startup.GraphResourceId, clientcred, new UserIdentifier(userObjectID, UserIdentifierType.UniqueId));
             return authenticationResult.AccessToken;
         }
 

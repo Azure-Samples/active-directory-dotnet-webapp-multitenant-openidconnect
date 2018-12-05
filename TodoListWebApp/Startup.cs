@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***********************************************************************************************/
 
+
 using System;
 using System.Configuration;
-using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 
@@ -34,30 +34,26 @@ namespace TodoListWebApp
 {
     public partial class Startup
     {
-        public static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
-        public static string appKey = ConfigurationManager.AppSettings["ida:ClientSecret"];
-        public static string graphResourceID = ConfigurationManager.AppSettings["ida:GraphAPIEndpoint"];
-        public static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
-        
-        public static string aadInstance = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:AADInstance"]);
-        public static string issuerEndpoint = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:IssuerEndpoint"]);
-        
+        public static string ClientId = ConfigurationManager.AppSettings["ida:ClientId"];
+        public static string AppKey = ConfigurationManager.AppSettings["ida:ClientSecret"];
+        public static string GraphResourceId = ConfigurationManager.AppSettings["ida:GraphAPIEndpoint"];
+        public static string RedirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
+
+        public static string AadInstance = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:AADInstance"]);
+        public static string IssuerEndpoint = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:IssuerEndpoint"]);
+
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+            this.ConfigureAuth(app);
         }
-        
+
         private static string EnsureTrailingSlash(string value)
         {
             if (value == null)
-            {
                 value = string.Empty;
-            }
 
             if (!value.EndsWith("/", StringComparison.Ordinal))
-            {
                 return value + "/";
-            }
 
             return value;
         }

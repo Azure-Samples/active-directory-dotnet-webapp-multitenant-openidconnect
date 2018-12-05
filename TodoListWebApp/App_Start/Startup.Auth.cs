@@ -23,27 +23,27 @@ SOFTWARE.
 ***********************************************************************************************/
 
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Claims;
 using System.Linq;
-using System.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using System.Web;
 using TodoListWebApp.DAL;
 using TodoListWebApp.Models;
-using System.IdentityModel.Claims;
+using TodoListWebApp.Utils;
 
 namespace TodoListWebApp
 {
     public partial class Startup
     {
-        private string authority = aadInstance + "common";
-        private const string objectIdClaimType = "http://schemas.microsoft.com/identity/claims/objectidentifier";
+        private readonly string authority = AadInstance + "common";
 
-        //private ApplicationDbContext db = new ApplicationDbContext();
         private TodoListWebAppContext db = new TodoListWebAppContext();
 
         public void ConfigureAuth(IAppBuilder app)
@@ -55,16 +55,11 @@ namespace TodoListWebApp
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
                 {
-                    ClientId = clientId,
-                    Authority = authority,
-                    RedirectUri = redirectUri,
-                    PostLogoutRedirectUri = redirectUri,
-                    TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        // instead of using the default validation (validating against a single issuer value, as we do in line of business apps),
-                        // we inject our own multi-tenant validation logic
-                        ValidateIssuer = false,
-                    },
+                    ClientId = ClientId,
+                    Authority = this.authority,
+                    RedirectUri = RedirectUri,
+                    PostLogoutRedirectUri = RedirectUri,
+                    TokenValidationParameters = this.BuildTokenValidationParameters(),
                     Notifications = new OpenIdConnectAuthenticationNotifications()
                     {
                         RedirectToIdentityProvider = (context) =>
@@ -81,14 +76,14 @@ namespace TodoListWebApp
                         {
                             // retrieve caller data from the incoming principal
                             string issuer = context.AuthenticationTicket.Identity.FindFirst("iss").Value;
-                            string UPN = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.Name).Value;
-                            string tenantID = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
+                            string Upn = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.Name).Value;
+                            string tenantId = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
 
                             if (
                                 // the caller comes from an admin-consented, recorded issuer
-                                (db.Tenants.FirstOrDefault(a => ((a.IssValue == issuer) && (a.AdminConsented))) == null)
+                                (this.db.Tenants.FirstOrDefault(a => ((a.IssValue == issuer) && (a.AdminConsented))) == null)
                                 // the caller is recorded in the db of users who went through the individual on-boarding
-                                && (db.Users.FirstOrDefault(b => ((b.UPN == UPN) && (b.TenantID == tenantID))) == null)
+                                && (this.db.Users.FirstOrDefault(b => ((b.UPN == Upn) && (b.TenantID == tenantId))) == null)
                                 )
                                 // the caller was neither from a trusted issuer or a registered user - throw to block the authentication flow
                                 throw new SecurityTokenValidationException();
@@ -98,13 +93,15 @@ namespace TodoListWebApp
                         AuthorizationCodeReceived = (context) =>
                         {
                             var code = context.Code;
-                            ClientCredential credential = new ClientCredential(clientId, appKey);
-                            string tenantID = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
-                            string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(System.IdentityModel.Claims.ClaimTypes.NameIdentifier).Value;
+                            ClientCredential credential = new ClientCredential(ClientId, AppKey);
+                            string tenantId = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
+                            string signedInUserId = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext authContext = new Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext(aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+                            AuthenticationContext authContext = new AuthenticationContext(AadInstance + tenantId, new ADALTokenCache(signedInUserId));
+
+                            // The following operation fetches a token for Microsoft graph and caches it in the token cache
                             AuthenticationResult result = authContext.AcquireTokenByAuthorizationCodeAsync(
-                                code, new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path)), credential, graphResourceID).Result;
+                                code, new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path)), credential, GraphResourceId).Result;
 
                             return Task.FromResult(0);
                         },
@@ -116,6 +113,39 @@ namespace TodoListWebApp
                         }
                     }
                 });
+        }
+
+        private TokenValidationParameters BuildTokenValidationParameters()
+        {
+            string defaultV2Issuer = "https://login.microsoftonline.com/{tenantid}/v2.0";
+
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                // Since this is a multi-tenant app, you should ideally only accept users from a list of tenants that you want to.
+                // *. Instead of using the default validation (validating against a single issuer value, as we do in line of business apps), we inject our own multi-tenant validation logic through IssuerValidator.
+                // *. Or you can provide a static list of acceptable tenantIds, as detailed below
+                // ValidIssuers = new List<string>()
+                // {
+                //     "https://sts.windows.net/6d9c0c36-c30e-442b-b60a-ca22d8994d14/",
+                //     "https://sts.windows.net/f69b5f46-9a0d-4a5c-9e25-54e42bbbd4c3/",
+                //     "https://sts.windows.net/fb674642-8965-493d-beee-2703caa74f9a/"
+                //     "https://login.microsoftonline.com/9188040d-6c67-4c5b-b112-36a304b66dad/v2.0"
+                // }
+                ValidateIssuer = true,
+                IssuerValidator = AadIssuerValidator.ValidateAadIssuer
+            };
+
+            // Here we store the tenantIds who've signed up for the app in a database. When the app has to validate, it builds a list of signed-up issuers from the database.
+            List<String> validIssuers = this.db.Tenants.GroupBy(a => a.IssValue).Select(a => a.FirstOrDefault().IssValue).ToList();
+
+            if (!validIssuers.Contains(defaultV2Issuer))
+            {
+                validIssuers.Add(defaultV2Issuer);
+            }
+
+            validationParameters.ValidIssuers = validIssuers;
+
+            return validationParameters;
         }
     }
 }

@@ -142,27 +142,34 @@ Clean the solution, rebuild the solution, and run it. The sample implements two 
 
 #### Sign up
 
-Start the application. Click on Sign Up.
+When running the app for the very first time, you'd need to sign-in as an administrator first. Click the `Sign Up` link on the top bar.
 
-![Sign Up](./ReadmeFiles/Sign-Up.JPG)
+![Sign Up link](./ReadmeFiles/Sign-Up.JPG)
 
-You will be presented with a form that simulates an onboarding process. Here you can choose if you want to follow the [admin consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant#admin-consent) flow (the app gets provisioned for all the users in one organization - requires you to sign up using an administrator) or the "user consent" flow (the app gets provisioned for your user only).
+You will be presented with a form that simulates an onboarding process. Check the checkbox and  Click the `SignUp` button.
 
 ![Sign Up form](./ReadmeFiles/Sign-Up-Admin.JPG)
 
-When running the app for the very first time, you'd need to sign-in as an administrator first. Check the checkbox and  Click the `SignUp` button.
-You'll be transferred to the Azure AD portal. Sign in as the administrator and you'd be presented with the following screen to consent on behalf of all users.
+ Now you are going through the [admin consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant#admin-consent) flow. In this flow, the app gets provisioned for all the users in one organization. You'll be transferred to the Azure AD portal. Sign in as the administrator and you'd be presented with the following screen to consent on behalf of all users.
 
 ![Admin Consent](./ReadmeFiles/Admin_consent.JPG)
 
 Click `Accept` to provision a [service principal](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals#service-principal-object) of this app in the tenant.
 You will be transported back to the app, where your registration will be finalized.
 
+If the app is not provisioned in your tenant by the tenant administrator using the steps laid out above, the sign-up process will result in the following error.
+
+![Need admin approval](./ReadmeFiles/NeedAdminApproval.JPG)
+
 #### Sign in
 
 Once you signed up, you can either click on the `Todo` tab or the `sign in` link to gain access to the application. Note that if you are selecting **sign in** in the same session in which you signed up, you will automatically sign in with the same account you used for signing up.
 
 If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent).
+
+If you try to sign-in before the tenant administrator has provisioned the app in the tenant using the `Sign up` link above, you will see the following error. 
+
+![AADSTS700016, App not found](./ReadmeFiles/AADSTS700016.JPG)
 
 ## National Cloud Deviations
 

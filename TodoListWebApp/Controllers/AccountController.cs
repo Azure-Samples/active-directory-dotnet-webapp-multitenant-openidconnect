@@ -90,7 +90,7 @@ namespace TodoListWebApp.Controllers
 
             if (!string.IsNullOrWhiteSpace(signedInUserID) && !string.IsNullOrWhiteSpace(tenantID))
             {
-                AuthenticationContext authContext = new AuthenticationContext(Startup.aadInstance + tenantID, new ADALTokenCache(signedInUserID));
+                AuthenticationContext authContext = new AuthenticationContext(Startup.AadInstance + tenantID, new ADALTokenCache(signedInUserID));
                 authContext.TokenCache.Clear();
             }
         }

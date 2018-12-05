@@ -68,9 +68,9 @@ namespace TodoListWebApp.Controllers
             // Create an OAuth2 request, using the web app as the client.This will trigger a consent flow that will provision the app in the target tenant.
             string authorizationRequest = string.Format(
                 "{0}common/oauth2/authorize?response_type=code&client_id={1}&resource={2}&redirect_uri={3}&state={4}",
-                Startup.aadInstance,
-                Uri.EscapeDataString(Startup.clientId),
-                Uri.EscapeDataString(Startup.graphResourceID),
+                Startup.AadInstance,
+                Uri.EscapeDataString(Startup.ClientId),
+                Uri.EscapeDataString(Startup.GraphResourceId),
                 Uri.EscapeDataString(this.Request.Url.GetLeftPart(UriPartial.Authority).ToString() + "/Onboarding/ProcessCode"),
                 Uri.EscapeDataString(stateMarker));
 
@@ -108,8 +108,8 @@ namespace TodoListWebApp.Controllers
                 var myTenant = db.Tenants.FirstOrDefault(a => a.IssValue == state);
 
                 // Get a token for the Graph, that will provide us with information abut the caller
-                ClientCredential credential = new ClientCredential(Startup.clientId, Startup.appKey);
-                AuthenticationContext authContext = new AuthenticationContext($"{Startup.aadInstance}common/");
+                ClientCredential credential = new ClientCredential(Startup.ClientId, Startup.AppKey);
+                AuthenticationContext authContext = new AuthenticationContext($"{Startup.AadInstance}common/");
 
                 AuthenticationResult result = await authContext.AcquireTokenByAuthorizationCodeAsync(code, new Uri(Request.Url.GetLeftPart(UriPartial.Path)), credential);
 
@@ -117,7 +117,7 @@ namespace TodoListWebApp.Controllers
                 if (myTenant.AdminConsented)
                 {
                     // Read the tenantID out of the Graph token and use it to create the issuer string
-                    string issuer = String.Format("{0}{1}/", Startup.issuerEndpoint, result.TenantId);
+                    string issuer = String.Format("{0}{1}/", Startup.IssuerEndpoint, result.TenantId);
                     myTenant.IssValue = issuer;
                 }
                 else
