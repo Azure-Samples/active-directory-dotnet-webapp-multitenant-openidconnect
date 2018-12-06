@@ -22,33 +22,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***********************************************************************************************/
 
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TodoListWebApp.Utils
 {
+    /// <summary>
+    /// Generic class that validates token issuer from the provided Azure AD authority
+    /// </summary>
     public static class AadIssuerValidator
     {
         /// <summary>
         /// A list of all Issuers across the various Azure AD instances
         /// </summary>
-        private static readonly SortedSet<string> IssuerAliases = new SortedSet<string>
-                                                   {
-                                                       "https://login.microsoftonline.com/",
-                                                       "https://login.windows.net/",
-                                                       "https://login.windows.net/",
-                                                       "https://login.microsoft.com/",
-                                                       "https://sts.windows.net/",
-                                                       "https://login.partner.microsoftonline.cn/",
-                                                       "https://login.chinacloudapi.cn/",
-                                                       "https://login.microsoftonline.de/",
-                                                       "https://login.microsoftonline.us/",
-                                                       "https://login.usgovcloudapi.net/",
-                                                       "https://login-us.microsoftonline.com/",
-                                                   };
+        private static readonly SortedSet<string> IssuerAliases = new SortedSet<string>();
+        const string FallBackAuthority = "https://login.microsoftonline.com/";
+
+        static AadIssuerValidator()
+        {
+            // In the constructor, we hit the Azure Ad issuer metadata endpoint and cache the aliases. The data is cached for 24 hrs by default.
+            string AzureADIssuerMetadataUrl = "https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https://login.microsoftonline.com/common/oauth2/v2.0/authorize&api-version=1.1";
+            ConfigurationManager<IssuerMetadata> configManager = new ConfigurationManager<IssuerMetadata>(AzureADIssuerMetadataUrl, new IssuerConfigurationRetriever());
+            IssuerMetadata issuerMetadata = configManager.GetConfigurationAsync().Result;
+
+            // Add issuer aliases of the chosen authority
+            string authority = !string.IsNullOrWhiteSpace(Startup.AadInstance) ? Startup.AadInstance : FallBackAuthority;
+            IssuerAliases.Clear();
+            issuerMetadata.Metadata.FirstOrDefault(auth => $"https://{auth.PreferredNetwork}/" == authority)?.Aliases.ForEach(z => IssuerAliases.Add(z));
+        }
 
         /// <summary>
         /// Validate the issuer for multi-tenant applications of various audience (Work and School account, or Work and School accounts +
@@ -96,24 +104,18 @@ namespace TodoListWebApp.Utils
                 allValidTenantedIssuers.Add(TenantedIssuer(validationParameters.ValidIssuer, tenantId));
             }
 
-            // Remove aliases from the valid tenanted issuers and build a list of tenantID guid's only for comparison 
+            // Remove aliases from the valid tenanted issuers and build a list of tenantID guid's only for comparison
             List<string> allValidIssuers = new List<string>();
             allValidIssuers.AddRange(allValidTenantedIssuers.Select(ExtractTenantIdFromIssuerString));
-
-            // TODO: Remove commented code after review
-            // Consider the aliases (https://login.microsoftonline.com (v2.0 tokens) => https://sts.windows.net (v1.0 tokens) )
-            // allValidIssuers.AddRange(allValidIssuers.Select(i => i.Replace("https://login.microsoftonline.com", "https://sts.windows.net")).ToArray());
-
-            // Consider tokens provided both by v1.0 and v2.0 issuers
-            // allValidTenantedIssuers.AddRange(allValidTenantedIssuers.Select(i => i.Replace("/v2.0", "/")).ToArray());
-
+            
             if (!allValidIssuers.Contains(ExtractTenantIdFromIssuerString(issuer)))
             {
                 throw new SecurityTokenInvalidIssuerException("Issuer does not match any of the valid issuers provided for this application.");
             }
-
+            
             return issuer;
         }
+
         /// <summary>
         /// Extracts the tenantId from a set of possible issuer strings
         /// </summary>
@@ -130,5 +132,65 @@ namespace TodoListWebApp.Utils
         {
             return i.Replace("{tenantid}", tenantId);
         }
+    }
+
+    /// <summary>
+    /// An implementation of IConfigurationRetriever geared towards Azure AD issuers metadata />
+    /// </summary>
+    public class IssuerConfigurationRetriever : IConfigurationRetriever<IssuerMetadata>
+    {
+        /// <summary>Retrieves a populated configuration given an address and an <see cref="T:Microsoft.IdentityModel.Protocols.IDocumentRetriever"/>.</summary>
+        /// <param name="address">Address of the discovery document.</param>
+        /// <param name="retriever">The <see cref="T:Microsoft.IdentityModel.Protocols.IDocumentRetriever"/> to use to read the discovery document.</param>
+        /// <param name="cancel">A cancellation token that can be used by other objects or threads to receive notice of cancellation. <see cref="T:System.Threading.CancellationToken"/>.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">address - Azure AD Issuer metadata address url is required
+        /// or
+        /// retriever - No metadata document retriever is provided</exception>
+        public async Task<IssuerMetadata> GetConfigurationAsync(string address, IDocumentRetriever retriever, CancellationToken cancel)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentNullException(nameof(address), $"Azure AD Issuer metadata address url is required");
+
+            if (retriever == null)
+            {
+                throw new ArgumentNullException(nameof(retriever), $"No metadata document retriever is provided");
+            }
+
+            string doc = await retriever.GetDocumentAsync(address, cancel).ConfigureAwait(false);
+            IssuerMetadata metadata = JsonConvert.DeserializeObject<IssuerMetadata>(doc);
+
+            return metadata;
+        }
+    }
+
+    /// <summary>
+    /// Model class to hold information parsed from the Azure AD issuer endpoint
+    /// </summary>
+    public class IssuerMetadata
+    {
+        [JsonProperty(PropertyName = "tenant_discovery_endpoint")]
+        public string TenantDiscoveryEndpoint { get; set; }
+
+        [JsonProperty(PropertyName = "api-version")]
+        public string ApiVersion { get; set; }
+
+        [JsonProperty(PropertyName = "metadata")]
+        public List<Metadata> Metadata { get; set; }
+    }
+
+    /// <summary>
+    /// Model child class to hold alias information parsed from the Azure AD issuer endpoint.
+    /// </summary>
+    public class Metadata
+    {
+        [JsonProperty(PropertyName = "preferred_network")]
+        public string PreferredNetwork { get; set; }
+
+        [JsonProperty(PropertyName = "preferred_cache")]
+        public string PreferredCache { get; set; }
+
+        [JsonProperty(PropertyName = "aliases")]
+        public List<string> Aliases { get; set; }
     }
 }

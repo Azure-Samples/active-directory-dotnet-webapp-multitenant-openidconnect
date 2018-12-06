@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -117,8 +118,7 @@ namespace TodoListWebApp.Controllers
                 if (myTenant.AdminConsented)
                 {
                     // Read the tenantID out of the Graph token and use it to create the issuer string
-                    string issuer = String.Format("{0}{1}/", Startup.IssuerEndpoint, result.TenantId);
-                    myTenant.IssValue = issuer;
+                    myTenant.IssValue = result?.UserInfo?.IdentityProvider;
                 }
                 else
                 {

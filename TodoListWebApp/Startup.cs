@@ -40,7 +40,6 @@ namespace TodoListWebApp
         public static string RedirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
 
         public static string AadInstance = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:AADInstance"]);
-        public static string IssuerEndpoint = EnsureTrailingSlash(ConfigurationManager.AppSettings["ida:IssuerEndpoint"]);
 
         public void Configuration(IAppBuilder app)
         {

@@ -167,7 +167,7 @@ Once you signed up, you can either click on the `Todo` tab or the `sign in` link
 
 If you are signing in during a new session, you will be presented with Azure AD's credentials prompt: sign in using an account compatible with the sign up option you chose earlier (the exact same account if you used user consent, any user form the same tenant if you used admin consent).
 
-If you try to sign-in before the tenant administrator has provisioned the app in the tenant using the `Sign up` link above, you will see the following error. 
+If you try to sign-in before the tenant administrator has provisioned the app in the tenant using the `Sign up` link above, you will see the following error.
 
 ![AADSTS700016, App not found](./ReadmeFiles/AADSTS700016.JPG)
 
