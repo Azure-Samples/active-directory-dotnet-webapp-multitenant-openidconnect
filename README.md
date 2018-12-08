@@ -14,16 +14,18 @@ endpoint: AAD v1.0
 
 ## About this sample
 
+This sample shows how to build an ASP.NET MVC web application that uses Azure AD for sign-in using the OpenID Connect protocol. Additionally it also introduces developers to the concept of a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) Azure Active Directory application.
+
 ### Overview
 
 When it comes to developing apps, developers can choose to configure their app to be either single-tenant or multi-tenant during app registration in the [Azure portal](https://portal.azure.com).
 
-- Single-tenant apps are only available in the tenant they were registered in, also known as their home tenant.
-- Multi-tenant apps are available to users in both their home tenant and other tenants.
+- `Single-tenant` apps are only available in the tenant they were registered in, also known as their home tenant.
+- `Multi-tenant` apps are available to users in both their home tenant and other tenants where they are provisioned.
 
 For more information about apps and tenancy, see [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
 
-This sample shows how to build a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) .Net MVC web application that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign up and sign in users from any Azure Active Directory tenant, using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
+This sample shows how to build a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) ASP.Net MVC web application that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign up and sign in users from any Azure Active Directory tenant, using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
 
 > Looking for previous versions of this code sample? Check out the tags on the [releases](../../releases) GitHub page.
 
@@ -33,7 +35,7 @@ For more information about how the protocols work in this scenario and other sce
 
 ### Scenario
 
-This sample demonstrates a multi-tenant .NET Web App (MVC) application calling The Microsoft Graph from different Azure AD tenants.
+This sample demonstrates a multi-tenant .NET Web App (MVC) application signing users from multiple Azure Ad tenants and calling [Microsoft Graph](https://graph.microsoft.com).
 
 1. The web app allows the tenant admins to sign-up (and provision this app in their tenant) by signing them using [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet).
 1. The users of these signed-up tenants can then sign-in themselves and create a Todo list for themselves.
@@ -176,6 +178,11 @@ If you try to sign-in before the tenant administrator has provisioned the app in
 In order to run this sample on a National Cloud, you can follow through the steps above with a few variations:
 
 1. You must register this sample for your Azure AD Tenant in a [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud) by following [[Step 2]](#step-2-register-the-sample-with-your-azure-active-directory-tenant) above in the National cloud of your choice.
+ If you using automation provided via Powershell to create your app, you need to change the [Configure.ps1](./AppCreationScripts/Configure.ps1) and [Cleanup.ps1](./AppCreationScripts/Cleanup.ps1) as instructed below to append the `-AzureEnvironmentName` parameter. The details on this parameter and its possible values are listed in [Connect-AzureAD](https://docs.microsoft.com/en-us/powershell/module/azuread/connect-azuread?view=azureadps-2.0).
+
+ ```Powershell
+ Connect-AzureAD -TenantId $tenantId -AzureEnvironmentName AzureUSGovernment
+
 1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
     - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the national or sovereign cloud you want to target.
     - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the  national or sovereign cloud you want to target.

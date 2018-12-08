@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 using System.Web;
 using TodoListWebApp.DAL;
 using TodoListWebApp.Models;
-using TodoListWebApp.Utils;
 
 namespace TodoListWebApp
 {
@@ -87,7 +86,7 @@ namespace TodoListWebApp
                                 )
                                 // the caller was neither from a trusted issuer or a registered user - throw to block the authentication flow
                                 throw new SecurityTokenValidationException("Please use the Sign-up link to sign -up for the ToDo list application.");
-                            
+
                             return Task.FromResult(0);
                         },
                         AuthorizationCodeReceived = (context) =>
@@ -117,32 +116,22 @@ namespace TodoListWebApp
 
         private TokenValidationParameters BuildTokenValidationParameters()
         {
-            string defaultV2Issuer = "https://login.microsoftonline.com/{tenantid}/v2.0";
-
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {
                 // Since this is a multi-tenant app, you should ideally only accept users from a list of tenants that you want to.
-                // * Instead of using the default validation (validating against a single issuer value, as we do in line of business apps), we inject our own multi-tenant validation logic through IssuerValidator.
+                // * Instead of using the default validation (validating against a single issuer value, as we do in line of business apps), you can inject your own multi-tenant validation logic through a IssuerValidator.
                 // * Or you can provide a static list of acceptable tenantIds, as detailed below
                 // ValidIssuers = new List<string>()
                 // {
                 //     "https://sts.windows.net/6d9c0c36-c30e-442b-b60a-ca22d8994d14/",
                 //     "https://sts.windows.net/f69b5f46-9a0d-4a5c-9e25-54e42bbbd4c3/",
                 //     "https://sts.windows.net/fb674642-8965-493d-beee-2703caa74f9a/"
-                //     "https://login.microsoftonline.com/9188040d-6c67-4c5b-b112-36a304b66dad/v2.0"
                 // }
-                ValidateIssuer = true,
-                IssuerValidator = AadIssuerValidator.ValidateAadIssuer // Use a custom Issuer validator 
+                ValidateIssuer = true
             };
 
             // Here we store the tenantIds who've signed up for the app in a database. When the app has to validate, it builds a list of signed-up issuers from the database.
             List<String> validIssuers = this.db.Tenants.GroupBy(a => a.IssValue).Select(a => a.FirstOrDefault().IssValue).ToList();
-
-            // Add AAD V2 default issuer
-            if (!validIssuers.Contains(defaultV2Issuer))
-            {
-                validIssuers.Add(defaultV2Issuer);
-            }
 
             validationParameters.ValidIssuers = validIssuers;
             return validationParameters;
