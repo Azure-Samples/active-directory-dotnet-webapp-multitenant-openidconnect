@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using System.Web;
 using TodoListWebApp.DAL;
 using TodoListWebApp.Models;
+using TodoListWebApp.Utils;
 
 namespace TodoListWebApp
 {
@@ -127,7 +128,8 @@ namespace TodoListWebApp
                 //     "https://sts.windows.net/f69b5f46-9a0d-4a5c-9e25-54e42bbbd4c3/",
                 //     "https://sts.windows.net/fb674642-8965-493d-beee-2703caa74f9a/"
                 // }
-                ValidateIssuer = true
+                ValidateIssuer = true,
+                IssuerValidator = AadIssuerValidator.ValidateAadIssuer
             };
 
             // Here we store the tenantIds who've signed up for the app in a database. When the app has to validate, it builds a list of signed-up issuers from the database.
