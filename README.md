@@ -163,6 +163,10 @@ If the app is not provisioned in your tenant by the tenant administrator using t
 
 ![Need admin approval](./ReadmeFiles/NeedAdminApproval.JPG)
 
+This step uses the `prompt=admin_consent' option provided in the [OAuth 2.0 authorization code grant](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#request-an-authorization-code) to provide the administrator an option to consent for the entire tenant.
+
+You can also use the [admin consent endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#using-the-admin-consent-endpoint) to provision the app in the chosen tenant.
+
 #### Sign in
 
 Once you signed up, you can either click on the `Todo` tab or the `sign in` link to gain access to the application. Note that if you are selecting **sign in** in the same session in which you signed up, you will automatically sign in with the same account you used for signing up.
