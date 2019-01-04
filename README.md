@@ -69,7 +69,12 @@ At this point we are ready to paste into the VS project the settings that will t
 3. Find the app key `ida:Password` and replace the value you copied in step 4.
 4. Go back to the portal, find the APPLICATION ID field and copy its content to the clipboard
 5. Find the app key `ida:ClientId` and replace the value with the APPLICATION ID from the Azure portal.
-6. Navigate to the `Dal` folder and open the `ToDoListWebAppContext` file. In the `TodoListWebAppContext()` definition set the base to the connection string for the SQL database that you want to use. If you want to use your local SQL database, your base definition should look like this: `base("Server = (localdb)\\mssqllocaldb; Database=Inventory;Trusted_Connection=True;MultipleActiveResultSets=true")`. 
+6. Navigate to the `Dal` folder and open the `ToDoListWebAppContext` file. In the `TodoListWebAppContext()` definition set the base to the connection string for the SQL database that you want to use. If you want to use your local SQL database, your base definition should look like this: 
+`      public TodoListWebAppContext()
+            : base("Server = (localdb)\\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;MultipleActiveResultSets=true")
+        { }
+`
+This will use the Entity Framework in memory database which is great for testing.
 
 ### Step 5:  [optional] Create an Azure Active Directory test tenant 
 
