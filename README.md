@@ -186,6 +186,7 @@ In order to run this sample on a National Cloud, you can follow through the step
 
  ```Powershell
  Connect-AzureAD -TenantId $tenantId -AzureEnvironmentName AzureUSGovernment
+ ```
 
 1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
     - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the national or sovereign cloud you want to target.
