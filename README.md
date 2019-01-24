@@ -14,7 +14,8 @@ endpoint: AAD v1.0
 
 ## About this sample
 
-This sample shows how to build an ASP.NET MVC web application that uses Azure AD for sign-in using the OpenID Connect protocol. Additionally it also introduces developers to the concept of a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) Azure Active Directory application.
+This sample shows how to build an ASP.NET MVC web application that uses Azure AD for sign-in using the OpenID Connect protocol in Azure Global and Microsoft National Cloud environments. Additionally it also introduces developers to the concept of a [multi-tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps) Azure Active Directory application.
+
 
 ### Overview
 
@@ -178,17 +179,30 @@ If you try to sign-in before the tenant administrator has provisioned the app in
 ![AADSTS700016, App not found](./ReadmeFiles/AADSTS700016.JPG)
 
 ## National Cloud Deviations
+Microsoft cloud services are also available in three separate national clouds. These national cloud versions are physical and logical network-isolated instances of Microsoft enterprise cloud services that are confined within the geographic borders of specific countries and operated by local personnel.
+Current national clouds include:
+- Microsoft Cloud for US Government
+- Microsoft Cloud Germany
+- Azure and Office 365 operated by 21Vianet in China
 
-In order to run this sample on a National Cloud, you can follow through the steps above with a few variations:
+In order to run this sample on a National Cloud, you can follow the same steps as of Global cloud with a few variations:
 
-1. You must register this sample for your Azure AD Tenant in a [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud) by following [[Step 2]](#step-2-register-the-sample-with-your-azure-active-directory-tenant) above in the National cloud of your choice.
- If you using automation provided via Powershell to create your app, you need to change the [Configure.ps1](./AppCreationScripts/Configure.ps1) and [Cleanup.ps1](./AppCreationScripts/Cleanup.ps1) as instructed below to append the `-AzureEnvironmentName` parameter. The details on this parameter and its possible values are listed in [Connect-AzureAD](https://docs.microsoft.com/en-us/powershell/module/azuread/connect-azuread?view=azureadps-2.0).
+#### Step 1: 
+Follow [[Step 1]](#Clone-or-download-this-repository)
 
- ```Powershell
- Connect-AzureAD -TenantId $tenantId -AzureEnvironmentName AzureUSGovernment
- ```
-
-1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
+#### Step 2: 
+1. Sign in to the Azure Government portal https://portal.azure.us.
+2. On the top bar, click on your account and under the Directory list, choose the Active Directory tenant where you wish to register your application.
+3. Click on More Services in the left hand nav, and choose Azure Active Directory.
+4. Click on App registrations and choose Add.
+5. Enter a friendly name for the application, for example `TodoListWebApp_MT` and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`. Click on Create to create the application.
+6. While still in the Azure Government portal, choose your application, click on Settings and choose Properties.
+7. Find the Application ID value and copy it to the clipboard.
+8. For the App ID URI, enter https://<your_tenant_name>/TodoListWebApp_MT, replacing <your_tenant_name> with the name of your Azure AD tenant.
+9. From the Settings menu, choose Keys and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Government portal.
+ 
+#### Step 3: 
+1. Follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
     - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the national or sovereign cloud you want to target.
     - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the  national or sovereign cloud you want to target.
     - Find the app key `ida:IssuerEndpoint` and replace the existing value with the corresponding issuer endpoint for the  national or sovereign cloud you want to target.
