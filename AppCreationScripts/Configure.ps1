@@ -199,7 +199,8 @@ Function ConfigureApplications
    # Add Required Resources Access (from 'service' to 'Microsoft Graph')
    Write-Host "Getting access from 'service' to 'Microsoft Graph'"
    $requiredPermissions = GetRequiredPermissions -applicationDisplayName "Microsoft Graph" `
-                                                -requiredDelegatedPermissions "User.Read|User.Read.All";
+                                                -requiredDelegatedPermissions "User.Read";
+                                                -requiredApplicationPermissions "User.Read.All";
 
    $requiredResourcesAccess.Add($requiredPermissions)
 
@@ -217,6 +218,11 @@ Function ConfigureApplications
    Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
 }
 
+# Pre-requisites
+if ((Get-Module -ListAvailable -Name "AzureAD") -eq $null) { 
+    Install-Module "AzureAD" -Scope CurrentUser 
+} 
+Import-Module AzureAD
 
 # Run interactively (will ask you for the tenant ID)
 ConfigureApplications -Credential $Credential -tenantId $TenantId
