@@ -68,13 +68,13 @@ or download and extract the repository .zip file.
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
-### Step 2: Register the sample with your Azure Active Directory tenant
+### Step 2: Register the sample application with your Azure Active Directory tenant
 
 There is one project in this sample. To register it, you can:
 
-- either follow the steps in the paragraphs below ([Step 2: Register the sample with your Azure Active Directory tenant](#step-2-register-the-sample-with-your-azure-active-directory-tenant) and [Step 3:  Configure the sample to use your Azure AD tenant](#step-3--configure-the-sample-to-use-your-azure-ad-tenant)
+- either follow the steps [Step 2: Register the sample with your Azure Active Directory tenant](#step-2-register-the-sample-with-your-azure-active-directory-tenant) and [Step 3:  Configure the sample to use your Azure AD tenant](#choose-the-azure-ad-tenant-where-you-want-to-create-your-applications)
 - or use PowerShell scripts that:
-  - **automatically** create for you the Azure AD applications and related objects (passwords, permissions, dependencies)
+  - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you.
   - modify the Visual Studio project's configuration files.
 
 If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
@@ -179,19 +179,41 @@ If you try to sign-in before the tenant administrator has provisioned the app in
 
 ## National Cloud Deviations
 
-In order to run this sample on a National Cloud, you can follow through the steps above with a few variations:
+National cloud are physical and logical network-isolated instances of Microsoft Azure that are confined within the geographic borders of specific countries and operated by local personnel. For more details, visit [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints).
 
-1. You must register this sample for your Azure AD Tenant in a [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud) by following [[Step 2]](#step-2-register-the-sample-with-your-azure-active-directory-tenant) above in the National cloud of your choice.
- If you using automation provided via Powershell to create your app, you need to change the [Configure.ps1](./AppCreationScripts/Configure.ps1) and [Cleanup.ps1](./AppCreationScripts/Cleanup.ps1) as instructed below to append the `-AzureEnvironmentName` parameter. The details on this parameter and its possible values are listed in [Connect-AzureAD](https://docs.microsoft.com/en-us/powershell/module/azuread/connect-azuread?view=azureadps-2.0).
+In order to run this sample on a National Cloud, you can follow the same steps as the global cloud with a few variations:
+
+### Step 1
+
+Follow [Step 1:  Clone or download this repository](#step-1--clone-or-download-this-repository)
+
+ If you are using the automation provided via Powershell to create your app, you need to change the [Configure.ps1](./AppCreationScripts/Configure.ps1) and [Cleanup.ps1](./AppCreationScripts/Cleanup.ps1) as instructed below to append the `-AzureEnvironmentName` parameter. The details on this parameter and its possible values are listed in [Connect-AzureAD](https://docs.microsoft.com/en-us/powershell/module/azuread/connect-azuread?view=azureadps-2.0).
 
  ```Powershell
  Connect-AzureAD -TenantId $tenantId -AzureEnvironmentName AzureUSGovernment
  ```
 
+### Step 2
+
+1. Sign-in and register this sample in your Azure AD Tenant of your chosen National Cloud's [App registration portal](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints) 
+1. On the top bar, click on your account and under the Directory list, choose the Active Directory tenant where you wish to register your application.
+1. Click on More Services in the left hand nav, and choose Azure Active Directory.
+1. Click on App registrations and choose Add.
+1. Enter a friendly name for the application, for example `TodoListWebApp_MT` and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`.
+1. Click on *Create* to create the application.
+1. In the succeeding page, Find the *Application ID* value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. Then click on *Settings*, and choose *Properties*.
+1. For the App ID URI, replace the guid in the generated URI 'https://<your_tenant_name>/<guid>', with the name of your service, for example, 'https://<your_tenant_name>/TodoListWebApp_MT' (replacing *<your_tenant_name>* with the name of your Azure AD tenant).
+1. From the Settings | Reply URLs page for your application, update the Reply URL for the application to be *https://localhost:44302/*
+1. From the Settings menu, choose Keys and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Government portal.
+1. Configure Permissions for your application. To that extent, in the Settings menu, choose the 'Required permissions' section and then,
+   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and select **User.Read** and **User.Read.All**.
+
+### Step 3
+
 1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
-    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding sign-in endpoint for the national or sovereign cloud you want to target.
-    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding Graph endpoint for the  national or sovereign cloud you want to target.
-    - Find the app key `ida:IssuerEndpoint` and replace the existing value with the corresponding issuer endpoint for the  national or sovereign cloud you want to target.
+    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding [Azure AD endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#azure-ad-authentication-endpoints) for the national cloud you want to target.
+    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding [Microsoft Graph endpoint](https://docs.microsoft.com/en-us/graph/deployments#microsoft-graph-and-graph-explorer-service-root-endpoints) for the  national or sovereign cloud you want to target.
 
 Once those changes have been accounted for, you should be able to run this sample in a National Cloud of your choice.  
 
@@ -212,28 +234,38 @@ The Home controller provides the basis for the main experience, listing all the 
 
 ### Sign Up
 
-The signs up operations are handled by the Onboarding controller.
-The SignUp action and corresponding view simulate a simple onboarding experience, which results in an OAuth2 code grant request that triggers the consent flow.
+The sign-up operations are handled by the Onboarding controller.
+The Sign-up action and corresponding view simulate a simple onboarding experience, which results in an OAuth2 code grant request that triggers the consent flow.
 The ProcessCode action receives authorization codes from Azure AD and, if they appear valid (see the code comments for details) it creates entries in the application store for the new customer organization/user.
 
 ### Todo editor
 
 This component is the application proper.
 Its core resource is the Todo controller, a CRUD editor, which leverages claims and the entity framework to manage a personalized list of Todo items for the currently signed in user.
-The Todo controller is secured via OpenId Connect, according to the logic in App_Start/Startup.Auth.cs.
+The Todo controller is secured using OpenId Connect, according to the logic in App_Start/Startup.Auth.cs.
 
 ### Notable code:
 
 ```CSharp
 
-    TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
-    {
-       ValidateIssuer = false,
-    }
+     TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                // Since this is a multi-tenant app, you should ideally only accept users from a list of tenants that you want to.
+                // * Instead of using the default validation (validating against a single issuer value, as we do in line of business apps), you can inject your own multi-tenant validation logic through a IssuerValidator.
+                // * Or you can provide a static list of acceptable tenantIds, as detailed below
+                // ValidIssuers = new List<string>()
+                // {
+                //     "https://sts.windows.net/6d9c0c36-c30e-442b-b60a-ca22d8994d14/",
+                //     "https://sts.windows.net/f69b5f46-9a0d-4a5c-9e25-54e42bbbd4c3/",
+                //     "https://sts.windows.net/fb674642-8965-493d-beee-2703caa74f9a/"
+                // }
+                ValidateIssuer = true,
+                IssuerValidator = AadIssuerValidator.ValidateAadIssuer
+            };
 
 ```
 
-That code turns off the default Issuer validation, given that in the case of a multitenant app, the list of acceptable [issuer](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#payload-claims) values is dynamic and cannot be acquired via metadata (as it is instead the case of a single tenant).
+That code assigns a Issuer validator, given that in the case of a multitenant app, the list of acceptable [issuer](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#payload-claims) values is dynamic and cannot be acquired via metadata (as it is in the case of a single tenant).
 
 ```CSharp
 
@@ -294,6 +326,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 For more information, see the following links:
 
+- [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/en-us/azure/active-directory/develop/)
 - [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
 - [Understanding Azure AD application consent experiences](https://docs.microsoft.com/en-us/azure/active-directory/develop/application-consent-experience)
 - [How to: Sign in any Azure Active Directory user using the multi-tenant application pattern](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant)
