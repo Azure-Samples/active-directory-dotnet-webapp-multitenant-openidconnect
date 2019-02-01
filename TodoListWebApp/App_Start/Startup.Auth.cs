@@ -86,7 +86,7 @@ namespace TodoListWebApp
                                 && (this.db.Users.FirstOrDefault(b => ((b.UPN == Upn) && (b.TenantID == tenantId))) == null)
                                 )
                                 // the caller was neither from a trusted issuer or a registered user - throw to block the authentication flow
-                                throw new SecurityTokenValidationException("Please use the Sign-up link to sign -up for the ToDo list application.");
+                                throw new UnauthorizedAccessException("Please use the Sign-up link to sign -up for the ToDo list application.");
 
                             return Task.FromResult(0);
                         },
