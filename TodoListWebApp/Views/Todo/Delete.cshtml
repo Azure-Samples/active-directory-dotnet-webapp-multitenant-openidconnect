@@ -1,7 +1,9 @@
 ﻿@model TodoListWebApp.Models.Todo
 
 @{
-    ViewBag.Title = "Delete";
+                /**/
+
+                ViewBag.Title = "Delete";
 }
 
 <h2>Delete</h2>
@@ -29,12 +31,13 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
+    @using (Html.BeginForm())
+    {
+@Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+<div class="form-actions no-color">
+    <input type="submit" value="Delete" class="btn btn-default" /> |
+    @Html.ActionLink("Back to List", "Index")
+</div>
+}
 </div>

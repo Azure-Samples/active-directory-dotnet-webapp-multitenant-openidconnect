@@ -4,17 +4,21 @@
     {
         @Html.AntiForgeryToken()
 
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                @Html.ActionLink("Hello " + User.Identity.Name + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
-            </li>
-            <li>@Html.ActionLink("Sign out", "SignOut", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-        </ul>
+        <text>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    @Html.ActionLink("Hello " + User.Identity.Name + "!", "Index", "UserProfile", routeValues: null, htmlAttributes: null)
+                </li>
+                <li>
+                <li>@Html.ActionLink("Sign out", "SignOut", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                </li>
+            </ul>
+        </text>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Sign in", "SignIn", "Account", routeValues: null, htmlAttributes: new { id = "logoutLink" })</li>
+        <li>@Html.ActionLink("Sign in", "SignIn", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }

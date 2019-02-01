@@ -213,3 +213,7 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/.vs
+/AppCreationScripts/Steps.md
+/AppCreationScripts/createdApps.html
+/TodoListWebApp/App_Data

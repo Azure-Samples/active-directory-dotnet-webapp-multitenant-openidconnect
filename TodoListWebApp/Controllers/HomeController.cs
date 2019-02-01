@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace TodoListWebApp.Controllers
-{
+{    
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -13,10 +13,18 @@ namespace TodoListWebApp.Controllers
             return View();
         }
 
-        public ActionResult Error(string message)
+        public ActionResult About()
         {
-            ViewBag.Message = message;
-            return View("Error");
-        }       
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
     }
 }
