@@ -61,7 +61,7 @@ To run this sample, you'll need:
 From your shell or command line:
 
 ```Shell
-git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git`
+git clone https://github.com/Azure-Samples/active-directory-dotnet-webapp-multitenant-openidconnect.git
 ```
 
 or download and extract the repository .zip file.
@@ -86,19 +86,18 @@ As a first step you'll need to:
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
 1. If your account gives you access to more than one tenant, select your account in the top-right corner, and set your portal session to the desired Azure AD tenant
    (using **Switch Directory**).
-1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)**.
+1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908).
 
 #### Register the service app (TodoListWebApp_MT)
 
-1. In **App registrations (Preview)** page, select **New registration**.
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListWebApp_MT`.
    - In the **Supported account types** section, select **Accounts in any organizational directory**.
-   - In the Redirect URI (optional) section, select **Web** in the combo-box and enter the following redirect URIs.
+   - In the **Redirect URI** section, select **Web** in the combo-box and enter the following redirect URIs.
        - `https://localhost:44302/`
        - `https://localhost:44302/Onboarding/ProcessCode`
 1. Select **Register** to create the application.
-   - Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**.
    - In the **Advanced settings** section set **Logout URL** to `https://localhost:44302/Account/EndSession`
