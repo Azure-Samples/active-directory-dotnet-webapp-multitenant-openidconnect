@@ -9,25 +9,26 @@ endpoint: AAD v1.0
 ---
 
 
-# Build a multi-tenant SaaS web application using Azure AD & OpenID Connect
+# Build a multi-tenant SaaS web application using Microsoft identity platform & OpenID Connect
 
 [![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20active-directory-dotnet-webapp-multitenant-openidconnect)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=729)
 
 ## About this sample
 
-This sample shows how to build an ASP.NET MVC web application that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign up and sign in users from any Azure Active Directory tenant, using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet). 
+This sample shows how to build an ASP.NET MVC web application that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign in users from any Azure Active Directory tenant in any national cloud using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) and the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet). 
 
 It also introduces developers to the concept of 
 
 - Microsoft National cloud environments
 - Multi-tenant Azure Active Directory application
 
+[!Note] If you want to run this sample in Microsoft worldwide Cloud, navigate to the [README.md](./README.md).
 
 ### Microsoft National cloud environments
 
 National clouds (aka Sovereign clouds) are physically isolated instances of Azure. These regions of Azure are designed to make sure that data residency, sovereignty, and compliance requirements are honored within geographical boundaries.
 
-Including global cloud​, Azure Active Directory is deployed in the following National clouds:  
+In addition to the public cloud​, Azure Active Directory is deployed in the following National clouds:  
 
 - Azure US Government
 - Azure Germany
@@ -37,12 +38,11 @@ Including global cloud​, Azure Active Directory is deployed in the followi
 
 When it comes to developing apps, developers can choose to configure their app to be either single-tenant or multi-tenant during app registration in the [Azure portal](https://portal.azure.com).
 
-- `Single-tenant` apps are only available in the tenant they were registered in, also known as their home tenant.
-- `Multi-tenant` apps are available to users in both their home tenant and other tenants where they are provisioned.
+- `Single-tenant` is for building line of business apps for users within your organization. These apps are only available to users that are in the same tenant as the app registration.
+
+- `Multi-tenant` Multi-tenant is for apps built by independent software vendors for any organization within a specific national cloud. These apps are available to users in any tenant where the app is provisioned by an administrator or consented by a user.
 
 For more information about apps and tenancy, see [Tenancy in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
-
-
 
 For more information about how the protocols work in this scenario and other scenarios, see the [Authentication Scenarios for Azure AD](https://azure.microsoft.com/documentation/articles/active-directory-authentication-scenarios/) document.
 
@@ -53,9 +53,9 @@ For more information about how the protocols work in this scenario and other sce
 This sample demonstrates a multi-tenant .NET Web App (MVC) application signing in users from multiple Azure AD tenants within a National cloud calling Microsoft Graph.
 
 1. The web app allows the tenant admins to sign up (and provision this app in their tenant) by signing them in using the [ASP.Net OpenID Connect OWIN middleware](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet).
-1. The users of these signed-up tenants can then sign in themselves and create a Todo list for themselves.
-1. The application also uses the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet) library to obtain a JWT access token from Azure Active Directory (Azure AD) for Microsoft Graph.
-1. The access token is used as a bearer token to authenticate the user when calling Microsoft Graph to fetch the signed-in user's details.
+2. Once an admin consents to the application's requested permissions, the users of these tenants can then sign in themselves and create a Todo list for themselves.
+3. The application also uses the [Active Directory Authentication Library (ADAL) for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet) library to obtain a JWT access token from Azure Active Directory (Azure AD) for Microsoft Graph.
+4. The access token is used as a bearer token to authenticate the user when calling Microsoft Graph to fetch the signed-in user's details.
 
 >[!Note] Azure Government applications can use Azure AD Government identities, but can also use Azure AD Public identities to authenticate to an application hosted in Azure Government.
 A multi-tenant application **will not** be accessible using Azure AD Public identities. To know more about choosing identity authority go to [choose identity authority in Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-plan-identity#choosing-your-identity-authority). 
@@ -65,7 +65,6 @@ A multi-tenant application **will not** be accessible using Azure AD Public iden
 To run this sample, you'll need:
 
 - [Visual Studio 2017](https://aka.ms/vsdownload)
-- An Internet connection.
 - An Azure Active Directory (Azure AD) tenant in that National cloud. (https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
 - A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
@@ -108,7 +107,7 @@ If you are using the automation provided via Powershell to create your app, you 
 
 In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-Open the solution in Visual Studio to configure the projects
+Open the solution dotnet-webapp-multitenant-oidc.sln in Visual Studio to configure the project (no s).
 
 #### Configure the service project
 
