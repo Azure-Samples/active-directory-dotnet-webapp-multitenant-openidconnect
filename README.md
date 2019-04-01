@@ -51,7 +51,7 @@ To run this sample, you'll need:
 - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
 - A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
->[!Note] If you want to run this sample in a **Microsoft National Cloud**, navigate to the ["National Cloud Deviations"](#national-cloud-deviations) section at the bottom of this page.
+>[!Note] If you want to run this sample in a **Microsoft National Cloud**, navigate to the [README-National-Cloud.md](./README-National-Cloud.md). 
 >
 >
 >
@@ -176,45 +176,7 @@ If you try to sign-in before the tenant administrator has provisioned the app in
 
 ![AADSTS700016, App not found](./ReadmeFiles/AADSTS700016.JPG)
 
-## National Cloud Deviations
 
-National cloud are physical and logical network-isolated instances of Microsoft Azure that are confined within the geographic borders of specific countries and operated by local personnel. For more details, visit [National Clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints).
-
-In order to run this sample on a National Cloud, you can follow the same steps as the global cloud with a few variations:
-
-### Step 1
-
-Follow [Step 1:  Clone or download this repository](#step-1--clone-or-download-this-repository)
-
- If you are using the automation provided via Powershell to create your app, you need to change the [Configure.ps1](./AppCreationScripts/Configure.ps1) and [Cleanup.ps1](./AppCreationScripts/Cleanup.ps1) as instructed below to append the `-AzureEnvironmentName` parameter. The details on this parameter and its possible values are listed in [Connect-AzureAD](https://docs.microsoft.com/en-us/powershell/module/azuread/connect-azuread?view=azureadps-2.0).
-
- ```Powershell
- Connect-AzureAD -TenantId $tenantId -AzureEnvironmentName AzureUSGovernment
- ```
-
-### Step 2
-
-1. Sign-in and register this sample in your Azure AD Tenant of your chosen National Cloud's [App registration portal](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints) 
-1. On the top bar, click on your account and under the Directory list, choose the Active Directory tenant where you wish to register your application.
-1. Click on More Services in the left hand nav, and choose Azure Active Directory.
-1. Click on App registrations and choose Add.
-1. Enter a friendly name for the application, for example `TodoListWebApp_MT` and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`.
-1. Click on *Create* to create the application.
-1. In the succeeding page, Find the *Application ID* value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
-1. Then click on *Settings*, and choose *Properties*.
-1. For the App ID URI, replace the guid in the generated URI 'https://<your_tenant_name>/<guid>', with the name of your service, for example, 'https://<your_tenant_name>/TodoListWebApp_MT' (replacing *<your_tenant_name>* with the name of your Azure AD tenant).
-1. From the Settings | Reply URLs page for your application, update the Reply URL for the application to be *https://localhost:44302/*
-1. From the Settings menu, choose Keys and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy and save the value in a safe location - you will need this key later to configure the project in Visual Studio - this key value will not be displayed again, nor retrievable by any other means, so please record it as soon as it is visible from the Azure Government portal.
-1. Configure Permissions for your application. To that extent, in the Settings menu, choose the 'Required permissions' section and then,
-   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and select **User.Read** and **User.Read.All**.
-
-### Step 3
-
-1. Then follow the steps outlined in [[Steps 3]](#step-3--configure-the-sample-to-use-your-azure-ad-tenant) above and additionally make the following changes in the `TodoListWebApp\Web.Config` file.
-    - Find the app key `ida:AADInstance` and replace the existing value with the corresponding [Azure AD endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#azure-ad-authentication-endpoints) for the national cloud you want to target.
-    - Find the app key `ida:GraphAPIEndpoint` and replace the existing value with the corresponding [Microsoft Graph endpoint](https://docs.microsoft.com/en-us/graph/deployments#microsoft-graph-and-graph-explorer-service-root-endpoints) for the  national or sovereign cloud you want to target.
-
-Once those changes have been accounted for, you should be able to run this sample in a National Cloud of your choice.  
 
 ## About The Code
 
