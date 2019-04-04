@@ -12,7 +12,8 @@ endpoint: AAD v1.0
 
 [![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20active-directory-dotnet-webapp-multitenant-openidconnect)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=729)
 
-> You may also be interested in this sample: https://github.com/azure-samples/ms-identity-aspnetcore-webapp-tutorial/
+> You may also be interested in this sample: https://github.com/azure-samples/ms-identity-aspnetcore-webapp-tutorial/tree/master/1-WebApp-OIDC/1-2-AnyOrg
+
 >
 > This newer sample takes advantage of the Microsoft identity platform (formerly Azure AD v2.0).
 >
