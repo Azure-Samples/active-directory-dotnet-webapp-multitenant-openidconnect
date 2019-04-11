@@ -31,8 +31,8 @@ National clouds (aka Sovereign clouds) are physically isolated instances of Azur
 In addition to the public cloud​, Azure Active Directory is deployed in the following National clouds:  
 
 - Azure US Government
-- Azure Germany
 - Azure China 21Vianet
+- Azure Germany
 
 ### Multi-tenant Azure Active Directory application
 
@@ -89,19 +89,38 @@ If you are using the automation provided via Powershell to create your app, you 
 
 ### Step 2:  Register the sample application with your Azure Active Directory tenant
 
-1. Sign in and register this sample in your Azure AD Tenant of your chosen National Cloud's [App registration portal](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints) 
-2. On the top bar, click on your account and under the Directory list, choose the Active Directory tenant where you wish to register your application.
-3. Click on More Services in the left-hand nav, and choose Azure Active Directory.
-4. Click on App registrations and choose *Add*.
-5. Enter a friendly name for the application, for example `TodoListWebApp_MT` and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44302/`.
-6. Click on *Create* to create the application.
-7. In the succeeding page, Find the *Application ID* value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
-8. Then click on *Settings*, and choose *Properties*.
-9. For the App ID URI, replace the guid in the generated URI 'https://<your_tenant_name>/<guid>', with the name of your service, for example, 'https://<your_tenant_name>/TodoListWebApp_MT' (replacing *<your_tenant_name>* with the name of your Azure AD tenant).
-10. From the Settings | Reply URLs page for your application, update the Reply URL for the application to be *https://localhost:44302/*
-11. From the Settings menu, choose Keys and add a key - select a key duration of either 1 year or 2 years. When you save this page, the key value will be displayed, copy, and save the value in a safe location - you will need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means, so record it as soon as it is visible from the Azure Government portal.
-12. Configure Permissions for your application. To that extent, in the Settings menu, choose the 'Required permissions' section and then,
-   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and select **User.Read** and **User.Read.All**.
+1. Sign in to the [US Government Azure portal](https://portal.azure.us)
+page select **New registration**.
+    
+    For registering your app in other National Clouds go to [App Registration endpoints](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints) of the National Cloud of your choice, using either a work or school account.
+   
+   > Note: Azure Germany doesn't support *App registrations (Preview)* experience.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListWebApp_MT`.
+   - In the **Supported account types** section, select **Accounts in any organizational directory**.
+   - In the **Redirect URI** section, select **Web** in the combo-box and enter the following redirect URIs.
+       - `https://localhost:44302/`
+       - `https://localhost:44302/Onboarding/ProcessCode`
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. In the list of pages for the app, select **Authentication**.
+   - In the **Advanced settings** section set **Logout URL** to `https://localhost:44302/Account/EndSession`
+   - In the **Advanced settings** | **Implicit grant** section, check  **ID tokens** as this sample requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
+   sign-in the user, and call an API.
+1. Select **Save**.
+1. The new customer onboarding process implemented by the sample requires the application to perform an OAuth2 request, which in turn requires to associate a key to the app in your tenant. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
+
+   - Type a key description (of instance `app secret`),
+   - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
+   - When you press the **Add** button, the key value will be displayed, copy, and save the value in a safe location.
+   - You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means,
+     so record it as soon as it is visible from the Azure portal.
+1. In the list of pages for the app, select **API permissions**
+   - Click the **Add a permission** button and then,
+   - Ensure that the **Microsoft APIs** tab is selected
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**, **User.Read.All**. Use the search box if necessary.
+   - Select the **Add permissions** button
 
 ### Step 3: Configure the sample to use your Azure AD tenant
 
