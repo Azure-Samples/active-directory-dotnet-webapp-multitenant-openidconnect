@@ -2,7 +2,7 @@
 services: active-directory
 platforms: dotnet
 author: jmprieur
-level: 200
+level: 400
 client: .NET Web App (MVC)
 service: Microsoft Graph
 endpoint: AAD v1.0

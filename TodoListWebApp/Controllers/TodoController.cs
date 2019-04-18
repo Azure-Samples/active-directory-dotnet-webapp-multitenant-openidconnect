@@ -107,11 +107,13 @@ namespace TodoListWebApp.Controllers
         // POST: /Todo/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Description")] Todo todo)
+        public ActionResult Edit(Todo todo)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(todo).State = EntityState.Modified;
+                // To simplify our sample, let's just update the 'Description' property by telling Entity Framework that just this property got modified.
+                db.Todoes.Attach(todo);
+                db.Entry(todo).Property(x => x.Description).IsModified = true;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
