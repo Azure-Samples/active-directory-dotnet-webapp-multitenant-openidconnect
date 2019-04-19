@@ -1,7 +1,7 @@
 {
   "Sample": {
     "Title": "Build a multi-tenant SaaS web application using Azure AD & OpenID Connect",
-    "Level": 200,
+    "Level": 400,
     "Client": ".NET Web App (MVC)",
     "Service": "Microsoft Graph",    
     "RepositoryUrl": "active-directory-dotnet-webapp-multitenant-openidconnect",
